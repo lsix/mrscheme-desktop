@@ -1,0 +1,10 @@
+2012-12-19  gettextize  <bug-gnu-gettext@gnu.org>
+
+	* Makefile.am (ACLOCAL_AMFLAGS): New variable.
+	(EXTRA_DIST): Add config.rpath, m4/ChangeLog.
+	* configure.ac (AC_OUTPUT): Add po/Makefile.in.
+
+2012-12-19  Initial release <lancelot.six@lip6.fr>
+
+	* Original version of the project
+

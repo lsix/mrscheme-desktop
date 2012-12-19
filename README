@@ -1,0 +1,7 @@
+This package provides the (desktop (MrScheme)) application.
+MrScheme is a light IDE used to program and run scheme programs.
+
+MrScheme-desktop develops a light gtk+ wrapper around the original
+MrScheme web application. The main interest of using this interface
+is the ability to load and save file from and to local filesystems
+without sandboxing limitations imposed by browsers.
