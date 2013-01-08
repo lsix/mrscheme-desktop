@@ -26,9 +26,11 @@
 
 G_DEFINE_TYPE (GtkMrSchemeWindow, gtk_mr_scheme_window, GTK_TYPE_WINDOW);
 
-/*
- * Utility functions
- * */
+/******************************************************************************
+ *                                                                            *
+ *                              Utility functions                             *
+ *                                                                            *
+ ******************************************************************************/
 
 /*
  * Creates a new string containing a followed by b.
@@ -65,7 +67,8 @@ read_file(char *filePath)
 }
 
 /*
- * Callbacks
+ * Update the titlebar of the GtkMrSchemeWindow according to the
+ * filename associated with it.
  * */
 void
 gtk_mr_scheme_window_update_title (GtkMrSchemeWindow *window, bool modified)
@@ -91,12 +94,15 @@ gtk_mr_scheme_window_update_title (GtkMrSchemeWindow *window, bool modified)
 	g_free (newTitle);
 }
 
+/*
+ * Update the fielname of associated with the window
+ * */
 void
 gtk_mr_scheme_window_set_filename(GtkMrSchemeWindow* window, const gchar* filename)
 {
 	if (filename == NULL) return;
 	
-	if (window->fileName != NULL && (strcmp (filename, window->fileName) == 0))
+	if (window->fileName != NULL && (strcmp (filename, window->fileName) != 0))
 	{
 		g_free (window->fileName);
 		window->fileName = NULL;
@@ -104,38 +110,9 @@ gtk_mr_scheme_window_set_filename(GtkMrSchemeWindow* window, const gchar* filena
 
 	if (window->fileName == NULL)
 	{
-		window->fileName =g_malloc ((strlen (filename)+1)*sizeof (gchar));
+		window->fileName = g_malloc ((strlen (filename)+1)*sizeof (gchar));
 		strcpy (window->fileName, filename);
 	}
-	gtk_mr_scheme_window_update_title (GTK_MR_SCHEME_WINDOW (window), false);
-}
-
-void load_scm_file(GObject *object, gpointer data)
-{
-	GtkWidget* window = GTK_WIDGET (data);
-	GtkWidget* dialog = gtk_file_chooser_dialog_new(_("Open"),
-	                                                GTK_WINDOW (window),
-	                                                GTK_FILE_CHOOSER_ACTION_OPEN,
-	                                                GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-	                                                GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
-	                                                NULL);
-
-	if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_ACCEPT)
-	{
-		gchar* filepath = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (dialog));
-
-		char *fileContent = read_file (filepath);
-
-		gtk_mr_scheme_set_scm_program (GTK_MR_SCHEME ( GTK_MR_SCHEME_WINDOW(window)->mrSchemeView),
-		                               fileContent);
-
-		gtk_mr_scheme_window_set_filename (GTK_MR_SCHEME_WINDOW (data), filepath);
-		
-		g_free(filepath);
-		free(fileContent);
-	}
-
-	gtk_widget_destroy (dialog);
 	gtk_mr_scheme_window_update_title (GTK_MR_SCHEME_WINDOW (window), false);
 }
 
@@ -158,9 +135,53 @@ save_file_as(GtkMrSchemeWindow* window, const gchar* fileName)
 	gtk_mr_scheme_window_set_filename (window, fileName);
 }
 
+/******************************************************************************
+ *                                                                            *
+ *                  Callbacks function associated with actions                *
+ *                                                                            *
+ ******************************************************************************/
+
+/*
+ * Loads a scheme file into the editor of the current window
+ * */
+void load_scm_file(GObject *object, gpointer data)
+{
+	GtkWidget*         window = GTK_WIDGET (data);
+	GtkMrSchemeWindow* mrwin  = GTK_MR_SCHEME_WINDOW (data);
+	GtkWidget*         dialog = gtk_file_chooser_dialog_new(_("Open"),
+	                                                GTK_WINDOW (window),
+	                                                GTK_FILE_CHOOSER_ACTION_OPEN,
+	                                                GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+	                                                GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
+	                                                NULL);
+
+	if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_ACCEPT)
+	{
+		gchar* filepath = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (dialog));
+
+		char *fileContent = read_file (filepath);
+
+		gtk_mr_scheme_set_scm_program (GTK_MR_SCHEME ( mrwin->mrSchemeView ),
+		                               fileContent);
+
+		gtk_mr_scheme_window_set_filename (mrwin, filepath);
+		
+		g_free(filepath);
+		free(fileContent);
+	}
+
+	gtk_widget_destroy (dialog);
+	gtk_mr_scheme_window_update_title (mrwin, false);
+}
+
+/*
+ * Save the content of the editor of the current window into
+ * a new file. The filename is prompted with a gtk dialog.
+ * */
 void save_as_scm_file(GObject *object, gpointer data)
 {
-	GtkWidget* window = GTK_WIDGET (data);
+	GtkWidget*         window = GTK_WIDGET (data);
+	GtkMrSchemeWindow* mrwin  = GTK_MR_SCHEME_WINDOW (data);
 	
 	GtkWidget *dialog = gtk_file_chooser_dialog_new(_("Save as"),
 	                                                GTK_WINDOW (window),
@@ -172,32 +193,48 @@ void save_as_scm_file(GObject *object, gpointer data)
 	{
 		gchar *filepath = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (dialog));
 
-		save_file_as (GTK_MR_SCHEME_WINDOW (data), filepath);
+		save_file_as (mrwin, filepath);
 		g_free (filepath);
 	}
 	
 	gtk_widget_destroy (dialog);
 }
 
+/*
+ * Save the content of the editor of the current window into
+ * the file that was previously used either when loading or
+ * saving a file.
+ * */
 void save_scm_file(GObject *object, gpointer data)
 {
+	GtkMrSchemeWindow* mrwin = GTK_MR_SCHEME_WINDOW (data);
 	// If no filename is known, run the save as action
 	if (GTK_MR_SCHEME_WINDOW (data)->fileName == NULL)
+	{
 		save_as_scm_file (object, data);
+	}
+	// otherwise directly save the file according to the
+	// previously used file name
 	else
 	{
-		save_file_as (GTK_MR_SCHEME_WINDOW (data), GTK_MR_SCHEME_WINDOW (data)->fileName);
+		save_file_as (mrwin, mrwin->fileName);
 	}
 }
 
+/*
+ * Run the code contained into the current window
+ * */
 void run_scm_code(GObject *object, gpointer data)
 {
-	gtk_mr_scheme_execute_program (GTK_MR_SCHEME (GTK_MR_SCHEME_WINDOW (data)->mrSchemeView));
+	GtkMrSchemeWindow* mrwin = GTK_MR_SCHEME_WINDOW (data);
+	gtk_mr_scheme_execute_program (mrwin->mrSchemeView);
 }
 
-/*
- * Public interface
- * */
+/******************************************************************************
+ *                                                                            *
+ *                             Public interface                               *
+ *                                                                            *
+ ******************************************************************************/
 
 static void
 gtk_mr_scheme_window_init (GtkMrSchemeWindow *gtk_mr_scheme_window)
