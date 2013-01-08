@@ -13,7 +13,7 @@ mrscheme_desktopdoc_DATA = \
 	NEWS
 
 
-EXTRA_DIST = config.rpath m4/ChangeLog  $(mrscheme_desktopdoc_DATA)
+EXTRA_DIST = m4/ChangeLog  $(mrscheme_desktopdoc_DATA)
 
 
 # Remove doc directory on uninstall

@@ -1,7 +1,7 @@
 dnl Process this file with autoconf to produce a configure script.
 dnl Created by Anjuta application wizard.
 
-AC_INIT(mrscheme_desktop, 0.1)
+AC_INIT(mrscheme_desktop, 0.2)
 
 AC_CONFIG_HEADERS([config.h])
 
@@ -11,8 +11,13 @@ AM_INIT_AUTOMAKE([1.11 -Wall -Werror])
 AM_SILENT_RULES([yes])
 
 AC_PROG_CC
+AC_PROG_CXX
 
 IT_PROG_INTLTOOL([0.35.0])
+
+AC_CHECK_HEADER_STDBOOL
+AC_FUNC_MALLOC
+AC_TYPE_SIZE_T
 
 GETTEXT_PACKAGE=mr_scheme
 AC_SUBST(GETTEXT_PACKAGE)
@@ -29,5 +34,4 @@ PKG_CHECK_MODULES(webkit, [webkit-1.0])
 AC_OUTPUT([ po/Makefile.in
 Makefile
 src/Makefile
-
 ])
