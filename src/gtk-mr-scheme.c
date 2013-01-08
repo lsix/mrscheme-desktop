@@ -121,7 +121,7 @@ gtk_mr_scheme_get_scm_program (GtkMrScheme *mrScheme)
 	{
 		JSStringRef raw_ret = JSValueToStringCopy (ctx,val,NULL);
 		size_t      n = JSStringGetMaximumUTF8CStringSize (raw_ret);
-		ret = (char*) malloc (n);
+		ret = (gchar*) g_malloc (n*sizeof(gchar));
 		size_t      read = JSStringGetUTF8CString(raw_ret, ret, n);
 		if (read > n)
 			fprintf(stderr, "Unble to retreive val\n");

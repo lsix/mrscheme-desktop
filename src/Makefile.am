@@ -19,7 +19,9 @@ bin_PROGRAMS = mrscheme_desktop
 mrscheme_desktop_SOURCES = \
 	main.c \
 	gtk-mr-scheme.c \
-	gtk-mr-scheme.h
+	gtk-mr-scheme.h \
+	gtk-mr-scheme-window.c \
+	gtk-mr-scheme-window.h
 
 mrscheme_desktop_LDFLAGS = \
 	-Wl,--export-dynamic

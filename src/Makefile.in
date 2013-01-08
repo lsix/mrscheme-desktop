@@ -68,7 +68,8 @@ CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
-am_mrscheme_desktop_OBJECTS = main.$(OBJEXT) gtk-mr-scheme.$(OBJEXT)
+am_mrscheme_desktop_OBJECTS = main.$(OBJEXT) gtk-mr-scheme.$(OBJEXT) \
+	gtk-mr-scheme-window.$(OBJEXT)
 mrscheme_desktop_OBJECTS = $(am_mrscheme_desktop_OBJECTS)
 am__DEPENDENCIES_1 =
 mrscheme_desktop_DEPENDENCIES = $(am__DEPENDENCIES_1) \
@@ -288,7 +289,9 @@ AM_CFLAGS = \
 mrscheme_desktop_SOURCES = \
 	main.c \
 	gtk-mr-scheme.c \
-	gtk-mr-scheme.h
+	gtk-mr-scheme.h \
+	gtk-mr-scheme-window.c \
+	gtk-mr-scheme-window.h
 
 mrscheme_desktop_LDFLAGS = \
 	-Wl,--export-dynamic
@@ -384,6 +387,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gtk-mr-scheme-window.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gtk-mr-scheme.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/main.Po@am__quote@
 
