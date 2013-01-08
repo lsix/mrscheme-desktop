@@ -42,6 +42,7 @@ typedef struct _GtkMrSchemeWindow GtkMrSchemeWindow;
 struct _GtkMrSchemeWindowClass
 {
 	GtkWindowClass parent_class;
+	gint numberOfInstances;
 };
 
 struct _GtkMrSchemeWindow
@@ -59,12 +60,6 @@ GType      gtk_mr_scheme_window_get_type (void) G_GNUC_CONST;
  * Create a new empty mrscheme window
  * */
 GtkWidget* gtk_mr_scheme_window_new (void);
-
-/*
- * Create a new mrscheme window, and preload the file
- * from file_path into the editor
- * */
-GtkWidget* gtk_mr_scheme_window_new_from_file(const gchar* file_path);
 
 G_END_DECLS
 

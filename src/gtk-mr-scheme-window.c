@@ -142,9 +142,30 @@ save_file_as(GtkMrSchemeWindow* window, const gchar* fileName)
  ******************************************************************************/
 
 /*
+ * Spawns a new editor window
+ * */
+void
+new_mr_scheme_window(GObject *object, gpointer data)
+{
+	GtkWidget* newwin = gtk_mr_scheme_window_new ();
+	gtk_widget_show_all (newwin);
+}
+
+/*
+ * Close the active mrscheme window
+ * */
+void
+close_mr_scheme_window(GObject* object, gpointer data)
+{
+	GtkWidget* window = GTK_WIDGET (data);
+	gtk_widget_destroy (window);
+}
+
+/*
  * Loads a scheme file into the editor of the current window
  * */
-void load_scm_file(GObject *object, gpointer data)
+void
+load_scm_file(GObject *object, gpointer data)
 {
 	GtkWidget*         window = GTK_WIDGET (data);
 	GtkMrSchemeWindow* mrwin  = GTK_MR_SCHEME_WINDOW (data);
@@ -250,6 +271,8 @@ gtk_mr_scheme_window_init (GtkMrSchemeWindow *gtk_mr_scheme_window)
 	GtkAction*     run;
 	GtkAction*     quit;
 	GtkAction*     saveAs;
+	GtkAction*     newWin;
+	GtkAction*     close;
 
 	// widgets for the menubar
 	GtkWidget *mBar = gtk_menu_bar_new ();
@@ -257,12 +280,10 @@ gtk_mr_scheme_window_init (GtkMrSchemeWindow *gtk_mr_scheme_window)
 	GtkWidget *fMen = gtk_menu_new ();
 	GtkWidget *exec = gtk_menu_item_new_with_mnemonic (_("E_xecute"));
 	GtkWidget *eMen = gtk_menu_new ();
-	GtkWidget *fSep = gtk_separator_menu_item_new ();
 
 	gtk_mr_scheme_window->fileName = NULL;
 	// widgets for the toolbar_item_type
 	GtkWidget   *toolBar = gtk_toolbar_new ();
-	GtkToolItem *sep     = gtk_separator_tool_item_new ();
 
 	// Initialize the main component
 	gtk_mr_scheme_window->mrSchemeView = GTK_MR_SCHEME (gtk_mr_scheme_new ());
@@ -276,36 +297,46 @@ gtk_mr_scheme_window_init (GtkMrSchemeWindow *gtk_mr_scheme_window)
 	accelGrp = gtk_accel_group_new ();
 	gtk_window_add_accel_group (GTK_WINDOW (gtk_mr_scheme_window), accelGrp);
 
-	open   = gtk_action_new ("Open", _("_Open"), _("Open a scm file"),   GTK_STOCK_OPEN);
-	save   = gtk_action_new ("Save", _("_Save"), _("Save the scm file"), GTK_STOCK_SAVE);
-	run    = gtk_action_new ("Run",  _("_Run"),  _("Run the code"),      GTK_STOCK_EXECUTE);
-	quit   = gtk_action_new ("Quit", _("_Quit"), _("Quit the application"), GTK_STOCK_QUIT);
+	open   = gtk_action_new ("Open",   _("_Open"),       _("Open a scm file"),             GTK_STOCK_OPEN);
+	save   = gtk_action_new ("Save",   _("_Save"),       _("Save the scm file"),           GTK_STOCK_SAVE);
+	run    = gtk_action_new ("Run",    _("_Run"),        _("Run the code"),                GTK_STOCK_EXECUTE);
+	quit   = gtk_action_new ("Quit",   _("_Quit"),       _("Quit the application"),        GTK_STOCK_QUIT);
 	saveAs = gtk_action_new ("Saveas", _("Save _as..."), _("Save the current program as"), GTK_STOCK_SAVE_AS);
+	newWin = gtk_action_new ("New",    _("_New"),        _("Create a new file"),           GTK_STOCK_NEW);
+	close  = gtk_action_new ("Close",  _("_Close"),      _("Close surrent window"),        GTK_STOCK_CLOSE);
 
 	/* Exit when the window is closed */
-	g_signal_connect (gtk_mr_scheme_window, "destroy",  G_CALLBACK (gtk_main_quit), gtk_mr_scheme_window);
-	g_signal_connect (quit,      "activate", G_CALLBACK (gtk_main_quit), gtk_mr_scheme_window);
-	g_signal_connect (open,      "activate", G_CALLBACK (load_scm_file), gtk_mr_scheme_window);
-	g_signal_connect (save,      "activate", G_CALLBACK (save_scm_file), gtk_mr_scheme_window);
-	g_signal_connect (run,       "activate", G_CALLBACK (run_scm_code),  gtk_mr_scheme_window);
-	g_signal_connect (saveAs,    "activate", G_CALLBACK (save_as_scm_file),  gtk_mr_scheme_window);
+	g_signal_connect (gtk_mr_scheme_window, "destroy",  G_CALLBACK (close_mr_scheme_window), gtk_mr_scheme_window);
+	g_signal_connect (quit,      "activate", G_CALLBACK (gtk_main_quit),          gtk_mr_scheme_window);
+	g_signal_connect (open,      "activate", G_CALLBACK (load_scm_file),          gtk_mr_scheme_window);
+	g_signal_connect (save,      "activate", G_CALLBACK (save_scm_file),          gtk_mr_scheme_window);
+	g_signal_connect (run,       "activate", G_CALLBACK (run_scm_code),           gtk_mr_scheme_window);
+	g_signal_connect (saveAs,    "activate", G_CALLBACK (save_as_scm_file),       gtk_mr_scheme_window);
+	g_signal_connect (close,     "activate", G_CALLBACK (close_mr_scheme_window), gtk_mr_scheme_window);
+	g_signal_connect (newWin,    "activate", G_CALLBACK (new_mr_scheme_window),   NULL);
 
 	/* Associate key shortcuts */
 	gtk_action_set_accel_path (open,   "<MrSchemeCode>/open");
 	gtk_action_set_accel_path (save,   "<MrSchemeCode>/save");
 	gtk_action_set_accel_path (saveAs, "<MrSchemeCode>/saveAs");
 	gtk_action_set_accel_path (run,    "<MrSchemeCode>/run");
+	gtk_action_set_accel_path (close,  "<MrSchemeCode>/close");
 	gtk_action_set_accel_path (quit,   "<MrScheme>/quit");
+	gtk_action_set_accel_path (newWin, "<MrScheme>/new");
 	gtk_accel_map_add_entry ("<MrSchemeCode>/open",   GDK_o, GDK_CONTROL_MASK);
 	gtk_accel_map_add_entry ("<MrSchemeCode>/save",   GDK_s, GDK_CONTROL_MASK);
 	gtk_accel_map_add_entry ("<MrSchemeCode>/saveAs", GDK_s, GDK_SHIFT_MASK | GDK_CONTROL_MASK);
 	gtk_accel_map_add_entry ("<MrSchemeCode>/run",    GDK_r, GDK_MOD1_MASK);
+	gtk_accel_map_add_entry ("<MrSchemeCode>/close",  GDK_w, GDK_CONTROL_MASK);
+	gtk_accel_map_add_entry ("<MrScheme>/new",        GDK_n, GDK_CONTROL_MASK);
 	gtk_accel_map_add_entry ("<MrScheme>/quit",       GDK_q, GDK_CONTROL_MASK);
-	gtk_action_set_accel_group (open, accelGrp);
-	gtk_action_set_accel_group (save, accelGrp);
+	gtk_action_set_accel_group (open,   accelGrp);
+	gtk_action_set_accel_group (save,   accelGrp);
 	gtk_action_set_accel_group (saveAs, accelGrp);
-	gtk_action_set_accel_group (run, accelGrp);
-	gtk_action_set_accel_group (quit, accelGrp);
+	gtk_action_set_accel_group (run,    accelGrp);
+	gtk_action_set_accel_group (quit,   accelGrp);
+	gtk_action_set_accel_group (newWin, accelGrp);
+	gtk_action_set_accel_group (close,  accelGrp);
 
 	// Builds the UI
 	vBox = gtk_vbox_new (false, 0);
@@ -314,10 +345,13 @@ gtk_mr_scheme_window_init (GtkMrSchemeWindow *gtk_mr_scheme_window)
 	gtk_menu_shell_append (GTK_MENU_SHELL (mBar), file);
 	gtk_menu_shell_append (GTK_MENU_SHELL (mBar), exec);
 	gtk_menu_item_set_submenu (GTK_MENU_ITEM (file), fMen);
+	gtk_menu_shell_append (GTK_MENU_SHELL (fMen), gtk_action_create_menu_item (newWin));
+	gtk_menu_shell_append (GTK_MENU_SHELL (fMen), gtk_separator_menu_item_new ());
 	gtk_menu_shell_append (GTK_MENU_SHELL (fMen), gtk_action_create_menu_item (open));
 	gtk_menu_shell_append (GTK_MENU_SHELL (fMen), gtk_action_create_menu_item (saveAs));
 	gtk_menu_shell_append (GTK_MENU_SHELL (fMen), gtk_action_create_menu_item (save));
-	gtk_menu_shell_append (GTK_MENU_SHELL (fMen), fSep);
+	gtk_menu_shell_append (GTK_MENU_SHELL (fMen), gtk_separator_menu_item_new ());
+	gtk_menu_shell_append (GTK_MENU_SHELL (fMen), gtk_action_create_menu_item (close));
 	gtk_menu_shell_append (GTK_MENU_SHELL (fMen), gtk_action_create_menu_item (quit));
 	gtk_menu_item_set_submenu (GTK_MENU_ITEM (exec), eMen);
 	gtk_menu_shell_append (GTK_MENU_SHELL (eMen), gtk_action_create_menu_item (run));
@@ -326,11 +360,13 @@ gtk_mr_scheme_window_init (GtkMrSchemeWindow *gtk_mr_scheme_window)
 
 	gtk_toolbar_set_style(GTK_TOOLBAR(toolBar), GTK_TOOLBAR_ICONS);
 
-	gtk_toolbar_insert (GTK_TOOLBAR (toolBar), GTK_TOOL_ITEM (gtk_action_create_tool_item (open)), -1);
+	gtk_toolbar_insert (GTK_TOOLBAR (toolBar), GTK_TOOL_ITEM (gtk_action_create_tool_item (newWin)), -1);
+	gtk_toolbar_insert (GTK_TOOLBAR (toolBar), gtk_separator_tool_item_new (),                       -1);
+	gtk_toolbar_insert (GTK_TOOLBAR (toolBar), GTK_TOOL_ITEM (gtk_action_create_tool_item (open)),   -1);
 	gtk_toolbar_insert (GTK_TOOLBAR (toolBar), GTK_TOOL_ITEM (gtk_action_create_tool_item (saveAs)), -1);
-	gtk_toolbar_insert (GTK_TOOLBAR (toolBar), GTK_TOOL_ITEM (gtk_action_create_tool_item (save)), -1);
-	gtk_toolbar_insert (GTK_TOOLBAR (toolBar), sep,     -1);
-	gtk_toolbar_insert (GTK_TOOLBAR (toolBar), GTK_TOOL_ITEM (gtk_action_create_tool_item (run)),  -1);
+	gtk_toolbar_insert (GTK_TOOLBAR (toolBar), GTK_TOOL_ITEM (gtk_action_create_tool_item (save)),   -1);
+	gtk_toolbar_insert (GTK_TOOLBAR (toolBar), gtk_separator_tool_item_new (),                       -1);
+	gtk_toolbar_insert (GTK_TOOLBAR (toolBar), GTK_TOOL_ITEM (gtk_action_create_tool_item (run)),    -1);
 	gtk_box_pack_start (GTK_BOX (vBox), toolBar, false, true, 0);
 	
 	scrWin = gtk_scrolled_window_new (NULL,NULL);
@@ -341,6 +377,8 @@ gtk_mr_scheme_window_init (GtkMrSchemeWindow *gtk_mr_scheme_window)
 
 	gtk_container_add (GTK_CONTAINER (scrWin), GTK_WIDGET (gtk_mr_scheme_window->mrSchemeView));
 
+	// Increments the number of availalble instances
+	GTK_MR_SCHEME_WINDOW_GET_CLASS (gtk_mr_scheme_window)->numberOfInstances++;
 }
 
 static void
@@ -352,6 +390,11 @@ gtk_mr_scheme_window_finalize (GObject *object)
 		g_free (GTK_MR_SCHEME_WINDOW (object)->fileName);
 	
 	G_OBJECT_CLASS (gtk_mr_scheme_window_parent_class)->finalize (object);
+
+	if (--(GTK_MR_SCHEME_WINDOW_GET_CLASS (object)->numberOfInstances) == 0)
+	{
+		gtk_main_quit ();
+	}
 }
 
 static void
@@ -361,6 +404,7 @@ gtk_mr_scheme_window_class_init (GtkMrSchemeWindowClass *klass)
 	//GtkWindowClass* parent_class = GTK_WINDOW_CLASS (klass);
 
 	object_class->finalize = gtk_mr_scheme_window_finalize;
+	klass->numberOfInstances = 0;
 }
 
 
