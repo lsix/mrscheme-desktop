@@ -32,6 +32,7 @@ int
 main (int argc, char *argv[])
 {
  	GtkWidget *window;
+	int       i;
 
 #ifdef ENABLE_NLS
 	bindtextdomain (GETTEXT_PACKAGE, PACKAGE_LOCALE_DIR);
@@ -41,8 +42,19 @@ main (int argc, char *argv[])
 
 	gtk_init (&argc, &argv);
 
-	window = gtk_mr_scheme_window_new ();
-	gtk_widget_show_all (window);
+	// If filenames are given, open them. Opens an empty window otherwise
+	if (argc == 1)
+	{
+		window = gtk_mr_scheme_window_new ();
+		gtk_widget_show_all (window);
+	} else
+	{
+		for (i=1; i<argc; i++)
+		{
+			window = gtk_mr_scheme_window_new_from_file (argv[i]);
+			gtk_widget_show_all (window);
+		}
+	}
 
 	gtk_main ();
 

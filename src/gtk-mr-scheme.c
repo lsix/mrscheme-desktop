@@ -26,6 +26,20 @@
 
 G_DEFINE_TYPE (GtkMrScheme, gtk_mr_scheme, WEBKIT_TYPE_WEB_VIEW);
 
+/******************************************************************************
+ *                                                                            * 
+ *                      Signal related types                                  * 
+ *                                                                            *
+ ******************************************************************************/
+
+enum {
+	READY,
+	CONTENT_CHANGED,
+	LAST_SIGNAL
+};
+
+static guint widget_signals[LAST_SIGNAL] = { 0 };
+
 char*
 escape_chars(char *str)
 {
@@ -77,6 +91,7 @@ after_load_web_view_cb(GObject *obj, gpointer data)
 	webkit_web_view_execute_script(WEBKIT_WEB_VIEW (mrScheme),
 	"var elt = document.getElementById('menu'); elt.style.height = '0px'; elt.style.visibility = 'hidden'");
 
+	g_signal_emit (obj, widget_signals[READY], 0);
 }
 
 static void
@@ -98,6 +113,28 @@ gtk_mr_scheme_class_init (GtkMrSchemeClass *klass)
 	GObjectClass* object_class = G_OBJECT_CLASS (klass);
 
 	object_class->finalize = gtk_mr_scheme_finalize;
+
+	// Initialize signals
+	widget_signals[READY] =
+		g_signal_new ("mrschemeready",
+		              G_TYPE_FROM_CLASS (object_class),
+		              G_SIGNAL_RUN_FIRST,
+		              0,
+		          	  NULL,
+		              NULL,
+		              gtk_marshal_VOID__VOID,
+		              G_TYPE_NONE,
+		              0);
+	widget_signals[CONTENT_CHANGED] =
+		g_signal_new ("content-changed",
+		              G_TYPE_FROM_CLASS (object_class),
+		              G_SIGNAL_RUN_FIRST,
+		              0,
+		          	  NULL,
+		              NULL,
+		              gtk_marshal_VOID__VOID,
+		              G_TYPE_NONE,
+		              0);
 }
 
 GtkWidget*
