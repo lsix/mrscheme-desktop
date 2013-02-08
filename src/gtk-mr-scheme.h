@@ -49,9 +49,27 @@ struct _GtkMrScheme
 };
 
 GType      gtk_mr_scheme_get_type (void) G_GNUC_CONST;
+
+/*
+ * Create a new instance of a widget showing mrScheme
+ * */
 GtkWidget* gtk_mr_scheme_new (void);
+
+/*
+ * Returns the current state of the code as shown in the
+ * mrScheme view
+ * */
 gchar*     gtk_mr_scheme_get_scm_program (GtkMrScheme *mrScheme);
+
+/*
+ * Replace the current code loaded in the mrScheme view
+ * by scm_prog
+ * */
 void       gtk_mr_scheme_set_scm_program (GtkMrScheme *mrScheme, gchar* scm_prog);
+
+/*
+ * Run the program contained in the mrScheme view
+ * */
 void       gtk_mr_scheme_execute_program (GtkMrScheme *mrScheme);
 
 G_END_DECLS

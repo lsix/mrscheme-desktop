@@ -48,8 +48,8 @@ struct _GtkMrSchemeWindowClass
 struct _GtkMrSchemeWindow
 {
 	GtkWindow parent_instance;
-
-	GtkMrScheme *mrSchemeView;
+	GtkWidget*   viewContainer;
+	GtkMrScheme* mrSchemeView;
 
 	gchar *fileName;
 };
@@ -60,6 +60,12 @@ GType      gtk_mr_scheme_window_get_type (void) G_GNUC_CONST;
  * Create a new empty mrscheme window
  * */
 GtkWidget* gtk_mr_scheme_window_new (void);
+
+/*
+ * Create a new mrscheme window and load it with
+ * the cont of a file.
+ * */
+GtkWidget* gtk_mr_scheme_window_new_from_file (const char* fileName);
 
 G_END_DECLS
 

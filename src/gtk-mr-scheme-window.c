@@ -141,6 +141,40 @@ save_file_as(GtkMrSchemeWindow* window, const gchar* fileName)
  *                                                                            *
  ******************************************************************************/
 
+void
+local_view_ready (GObject* object, gpointer data)
+{
+	GtkMrSchemeWindow* gtk_mr_scheme_window = GTK_MR_SCHEME_WINDOW (data);
+	GList *children, *iter;
+	children = gtk_container_get_children (GTK_CONTAINER (gtk_mr_scheme_window->viewContainer));
+	for (iter = children; iter != NULL; iter = g_list_next(iter) )
+	{
+		gtk_container_remove (GTK_CONTAINER (gtk_mr_scheme_window->viewContainer),
+		                      GTK_WIDGET (iter->data));
+		
+	}
+	g_list_free (children);
+	
+	gtk_container_add (GTK_CONTAINER (gtk_mr_scheme_window->viewContainer), GTK_WIDGET (gtk_mr_scheme_window->mrSchemeView));
+
+	// Preload file if needed
+	if (gtk_mr_scheme_window->fileName != NULL)
+	{
+		char *fileContent = read_file (gtk_mr_scheme_window->fileName);
+
+		gtk_mr_scheme_set_scm_program (GTK_MR_SCHEME ( gtk_mr_scheme_window->mrSchemeView ),
+		                               fileContent);
+
+		free (fileContent);
+
+		gtk_mr_scheme_window_set_filename (gtk_mr_scheme_window, gtk_mr_scheme_window->fileName);
+
+	}
+	
+	gtk_widget_set_visible (GTK_WIDGET (gtk_mr_scheme_window->mrSchemeView), true);
+
+}
+
 /*
  * Spawns a new editor window
  * */
@@ -262,8 +296,8 @@ gtk_mr_scheme_window_init (GtkMrSchemeWindow *gtk_mr_scheme_window)
 {
 	// Main attributes for the widget
 	GtkWidget*     vBox;
-	GtkWidget*     scrWin;
 	GtkAccelGroup* accelGrp;
+	GtkWidget*     loadingMsg;
 
 	// Actions associated with the widget
 	GtkAction*     open;
@@ -315,6 +349,8 @@ gtk_mr_scheme_window_init (GtkMrSchemeWindow *gtk_mr_scheme_window)
 	g_signal_connect (close,     "activate", G_CALLBACK (close_mr_scheme_window), gtk_mr_scheme_window);
 	g_signal_connect (newWin,    "activate", G_CALLBACK (new_mr_scheme_window),   NULL);
 
+	g_signal_connect (gtk_mr_scheme_window->mrSchemeView, "mrschemeready", G_CALLBACK (local_view_ready), gtk_mr_scheme_window);
+	
 	/* Associate key shortcuts */
 	gtk_action_set_accel_path (open,   "<MrSchemeCode>/open");
 	gtk_action_set_accel_path (save,   "<MrSchemeCode>/save");
@@ -368,17 +404,20 @@ gtk_mr_scheme_window_init (GtkMrSchemeWindow *gtk_mr_scheme_window)
 	gtk_toolbar_insert (GTK_TOOLBAR (toolBar), gtk_separator_tool_item_new (),                       -1);
 	gtk_toolbar_insert (GTK_TOOLBAR (toolBar), GTK_TOOL_ITEM (gtk_action_create_tool_item (run)),    -1);
 	gtk_box_pack_start (GTK_BOX (vBox), toolBar, false, true, 0);
-	
-	scrWin = gtk_scrolled_window_new (NULL,NULL);
-	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrWin),
+
+	gtk_mr_scheme_window->viewContainer = gtk_scrolled_window_new (NULL,NULL);
+	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (gtk_mr_scheme_window->viewContainer),
 	                                GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 
-	gtk_box_pack_start (GTK_BOX (vBox), scrWin, true, true, 0);
+	gtk_box_pack_start (GTK_BOX (vBox), gtk_mr_scheme_window->viewContainer, true, true, 0);
 
-	gtk_container_add (GTK_CONTAINER (scrWin), GTK_WIDGET (gtk_mr_scheme_window->mrSchemeView));
-
+	loadingMsg = gtk_label_new ( _("Loading....\nIf this message does not disappeare, please check your internet connection or\nvisit MrScheme website at\nhttps://www-licence.ufr-info-p6.jussieu.fr/lmd/licence/2012/ue/LI101-2012oct/MrScheme/mrscheme.html") );
+	gtk_label_set_selectable (GTK_LABEL (loadingMsg), true);
+	gtk_scrolled_window_add_with_viewport (GTK_SCROLLED_WINDOW (gtk_mr_scheme_window->viewContainer), loadingMsg);
+	//gtk_container_add (GTK_CONTAINER (gtk_mr_scheme_window->viewContainer), loadingMsg);
 	// Increments the number of availalble instances
 	GTK_MR_SCHEME_WINDOW_GET_CLASS (gtk_mr_scheme_window)->numberOfInstances++;
+
 }
 
 static void
@@ -413,4 +452,13 @@ GtkWidget*
 gtk_mr_scheme_window_new (void)
 {
 	return GTK_WIDGET ( g_object_new (GTK_TYPE_MR_SCHEME_WINDOW, NULL));
+}
+
+GtkWidget *
+gtk_mr_scheme_window_new_from_file (const char* fileName)
+{
+	GtkMrSchemeWindow *window = GTK_MR_SCHEME_WINDOW (g_object_new (GTK_TYPE_MR_SCHEME_WINDOW, NULL));
+	window->fileName = g_malloc ((strlen(fileName)+1)*sizeof (gchar));
+	strcpy (window->fileName, fileName);
+	return GTK_WIDGET (window);
 }
