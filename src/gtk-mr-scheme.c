@@ -71,11 +71,15 @@ escape_chars(char *str)
 static void
 after_load_web_view_cb(GObject *obj, gpointer data)
 {
+	// Cache les elements qui ne sont pas utiles dans la version enmarquee.
+	// Evite egalement la presence de liens qui feraient quitter la pgae
 	GtkMrScheme *mrScheme = GTK_MR_SCHEME (obj);
 	webkit_web_view_execute_script(WEBKIT_WEB_VIEW (mrScheme),
 	"var elt = document.getElementById('Title'); elt.style.height = '0px'; elt.style.visibility = 'hidden'");
 	webkit_web_view_execute_script(WEBKIT_WEB_VIEW (mrScheme),
 	"var elt = document.getElementById('menu'); elt.style.height = '0px'; elt.style.visibility = 'hidden'");
+	webkit_web_view_execute_script(WEBKIT_WEB_VIEW (mrScheme),
+	"var elt = document.getElementById('copyright'); elt.style.height = '0px'; elt.style.visibility = 'hidden'");
 
 }
 
