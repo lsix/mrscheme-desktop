@@ -21,8 +21,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include <JavaScriptCore/JSStringRef.h>
-#include <JavaScriptCore/JSObjectRef.h>
+#include <JavaScriptCore/JavaScript.h>
 
 G_DEFINE_TYPE (GtkMrScheme, gtk_mr_scheme, WEBKIT_TYPE_WEB_VIEW);
 
@@ -82,18 +81,61 @@ escape_chars(char *str)
 	return ret;
 }
 
+/******************************************************************************
+ *                                                                            *
+ *                     Interractions with JavaScriptCore                      *
+ *                                                                            *                                 
+ * We create an object called MrSchemeDesktop availalble from Javascript.     *
+ * A method codeChanged is availalble so javascript code can triger C callback*
+ ******************************************************************************/
+
+static JSValueRef codeChangedRawCallback(JSContextRef ctx, JSObjectRef function, JSObjectRef thisObject, size_t argumentCount, const JSValueRef arguments[], JSValueRef* exception) {
+	GtkMrScheme *mrScheme = GTK_MR_SCHEME (JSObjectGetPrivate (thisObject));
+	g_signal_emit (G_OBJECT (mrScheme), widget_signals[CONTENT_CHANGED], 0);
+
+	return JSValueMakeBoolean (ctx, true);
+}
+
+static JSStaticFunction StaticFunctions[] = {
+    { "codeChanged", codeChangedRawCallback, kJSPropertyAttributeNone },
+    { 0, 0, 0 }
+};
+
+void createMrSchemeJSObject (GtkMrScheme *mrScheme) {
+	JSClassDefinition  classDef   = kJSClassDefinitionEmpty;
+	WebKitWebFrame     *frame     = webkit_web_view_get_main_frame (WEBKIT_WEB_VIEW(mrScheme));
+	JSGlobalContextRef ctx        = webkit_web_frame_get_global_context (frame);
+	JSObjectRef        globObject = JSContextGetGlobalObject (ctx);
+	JSStringRef        objName    = JSStringCreateWithUTF8CString ("MrSchemeDesktop");
+	JSValueRef         except;
+	JSClassRef         classRef;
+
+	// Initialize the javascript class of the object MrSchemeDesktop
+	classDef.staticFunctions = StaticFunctions;
+	classRef = JSClassCreate (&classDef);
+	
+	// Register the MrSchemeDesktop object to it
+	JSObjectSetProperty(ctx, globObject, objName, JSObjectMake (ctx, classRef, mrScheme), kJSClassAttributeNone, &except);
+}
+
 static void
 after_load_web_view_cb(GObject *obj, gpointer data)
 {
+	GtkMrScheme *mrScheme = GTK_MR_SCHEME (obj);
+	createMrSchemeJSObject (mrScheme);
+	
 	// Cache les elements qui ne sont pas utiles dans la version enmarquee.
 	// Evite egalement la presence de liens qui feraient quitter la pgae
-	GtkMrScheme *mrScheme = GTK_MR_SCHEME (obj);
 	webkit_web_view_execute_script(WEBKIT_WEB_VIEW (mrScheme),
 	"var elt = document.getElementById('Title'); elt.style.height = '0px'; elt.style.visibility = 'hidden'");
 	webkit_web_view_execute_script(WEBKIT_WEB_VIEW (mrScheme),
 	"var elt = document.getElementById('menu'); elt.style.height = '0px'; elt.style.visibility = 'hidden'");
 	webkit_web_view_execute_script(WEBKIT_WEB_VIEW (mrScheme),
 	"var elt = document.getElementById('copyright'); elt.style.height = '0px'; elt.style.visibility = 'hidden'");
+
+	// Get the global object from javascript context
+	webkit_web_view_execute_script(WEBKIT_WEB_VIEW (mrScheme),
+		"MrScheme.editor.on ('change', function(a, b){alert(a);})");
 
 	g_signal_emit (obj, widget_signals[READY], 0);
 }
@@ -151,7 +193,7 @@ gchar*
 gtk_mr_scheme_get_scm_program (GtkMrScheme *mrScheme)
 {
 	gchar *ret = NULL;
-	WebKitWebFrame     *frame = webkit_web_view_get_focused_frame (WEBKIT_WEB_VIEW(mrScheme));
+	WebKitWebFrame     *frame = webkit_web_view_get_main_frame (WEBKIT_WEB_VIEW(mrScheme));
 	JSGlobalContextRef ctx    = webkit_web_frame_get_global_context (frame);
 
 	JSStringRef cmdJS = JSStringCreateWithUTF8CString ("return MrScheme.editor.getValue()");
