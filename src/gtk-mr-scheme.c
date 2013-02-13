@@ -89,7 +89,14 @@ escape_chars(char *str)
  * A method codeChanged is availalble so javascript code can triger C callback*
  ******************************************************************************/
 
-static JSValueRef codeChangedRawCallback(JSContextRef ctx, JSObjectRef function, JSObjectRef thisObject, size_t argumentCount, const JSValueRef arguments[], JSValueRef* exception) {
+// When Javascript calls MrSchemeDesktop.codeChanged(), the 
+// content-changed signal is emmited by the current widget.
+static JSValueRef codeChangedRawCallback(JSContextRef     ctx,
+                                         JSObjectRef      function,
+                                         JSObjectRef      thisObject,
+                                         size_t           argumentCount,
+                                         const JSValueRef arguments[],
+                                         JSValueRef       * exception) {
 	GtkMrScheme *mrScheme = GTK_MR_SCHEME (JSObjectGetPrivate (thisObject));
 	g_signal_emit (G_OBJECT (mrScheme), widget_signals[CONTENT_CHANGED], 0);
 
@@ -101,6 +108,9 @@ static JSStaticFunction StaticFunctions[] = {
     { 0, 0, 0 }
 };
 
+/*
+ * Creates and registers the MrSchemeDesktop javascript object
+ * */
 void createMrSchemeJSObject (GtkMrScheme *mrScheme) {
 	JSClassDefinition  classDef   = kJSClassDefinitionEmpty;
 	WebKitWebFrame     *frame     = webkit_web_view_get_main_frame (WEBKIT_WEB_VIEW(mrScheme));
@@ -114,24 +124,47 @@ void createMrSchemeJSObject (GtkMrScheme *mrScheme) {
 	classDef.staticFunctions = StaticFunctions;
 	classRef = JSClassCreate (&classDef);
 	
-	// Register the MrSchemeDesktop object to it
-	JSObjectSetProperty(ctx, globObject, objName, JSObjectMake (ctx, classRef, mrScheme), kJSClassAttributeNone, &except);
+	// Register the MrSchemeDesktop object as property of the top level object
+	// of the context
+	JSObjectSetProperty(ctx,
+	                    globObject,
+	                    objName,
+	                    JSObjectMake (ctx,
+	                                  classRef,
+	                                  mrScheme),
+	                    kJSClassAttributeNone,
+	                    &except);
+
+	JSStringRelease (objName);
 }
+
+/******************************************************************************
+ *                                                                            *
+ *                  Callback called when the webview is ready                 *
+ *                                                                            *
+ ******************************************************************************/
 
 static void
 after_load_web_view_cb(GObject *obj, gpointer data)
 {
 	GtkMrScheme *mrScheme = GTK_MR_SCHEME (obj);
+
+	// Registers the MrSchemeDesktop javascript object
 	createMrSchemeJSObject (mrScheme);
 	
-	// Cache les elements qui ne sont pas utiles dans la version enmarquee.
-	// Evite egalement la presence de liens qui feraient quitter la pgae
+	// Hides everything unused for the embedded version
 	webkit_web_view_execute_script(WEBKIT_WEB_VIEW (mrScheme),
-	"var elt = document.getElementById('Title'); elt.style.height = '0px'; elt.style.visibility = 'hidden'");
+		"var elt = document.getElementById('Title');\
+		elt.style.height = '0px';\
+		elt.style.visibility = 'hidden';");
 	webkit_web_view_execute_script(WEBKIT_WEB_VIEW (mrScheme),
-	"var elt = document.getElementById('menu'); elt.style.height = '0px'; elt.style.visibility = 'hidden'");
+		"var elt = document.getElementById('menu');\
+		elt.style.height = '0px';\
+		elt.style.visibility = 'hidden';");
 	webkit_web_view_execute_script(WEBKIT_WEB_VIEW (mrScheme),
-	"var elt = document.getElementById('copyright'); elt.style.height = '0px'; elt.style.visibility = 'hidden'");
+		"var elt = document.getElementById('copyright');\
+		elt.style.height = '0px';\
+		elt.style.visibility = 'hidden';");
 
 	// Get the global object from javascript context
 	webkit_web_view_execute_script(WEBKIT_WEB_VIEW (mrScheme),
@@ -143,8 +176,12 @@ after_load_web_view_cb(GObject *obj, gpointer data)
 static void
 gtk_mr_scheme_init (GtkMrScheme *gtk_mr_scheme)
 {
-	webkit_web_view_load_uri (WEBKIT_WEB_VIEW (gtk_mr_scheme), MRECHEME_WEB_URI);
-	g_signal_connect(gtk_mr_scheme, "load-finished", G_CALLBACK(after_load_web_view_cb), NULL);
+	webkit_web_view_load_uri (WEBKIT_WEB_VIEW (gtk_mr_scheme),
+	                          MRECHEME_WEB_URI);
+	g_signal_connect(gtk_mr_scheme,
+	                 "load-finished",
+	                 G_CALLBACK(after_load_web_view_cb),
+	                 NULL);
 }
 
 static void
