@@ -166,9 +166,10 @@ after_load_web_view_cb(GObject *obj, gpointer data)
 		elt.style.height = '0px';\
 		elt.style.visibility = 'hidden';");
 
+	// TODO Uncomment when codemirror used by mrschemeDesktop is updated.
 	// Get the global object from javascript context
 	//webkit_web_view_execute_script(WEBKIT_WEB_VIEW (mrScheme),
-	//	"MrScheme.editor.on ('change', function(a, b){alert(a);})");
+	//	"MrScheme.editor.on ('change', function(a, b){MrSchemeDesktop.codeChanged();})");
 
 	g_signal_emit (obj, widget_signals[READY], 0);
 }
