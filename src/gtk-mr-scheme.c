@@ -167,8 +167,8 @@ after_load_web_view_cb(GObject *obj, gpointer data)
 		elt.style.visibility = 'hidden';");
 
 	// Get the global object from javascript context
-	webkit_web_view_execute_script(WEBKIT_WEB_VIEW (mrScheme),
-		"MrScheme.editor.on ('change', function(a, b){alert(a);})");
+	//webkit_web_view_execute_script(WEBKIT_WEB_VIEW (mrScheme),
+	//	"MrScheme.editor.on ('change', function(a, b){alert(a);})");
 
 	g_signal_emit (obj, widget_signals[READY], 0);
 }
