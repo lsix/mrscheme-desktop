@@ -223,10 +223,11 @@ load_scm_file(GObject *object, gpointer data)
 		
 		g_free(filepath);
 		free(fileContent);
+
+		gtk_mr_scheme_window_update_title (mrwin, false);
 	}
 
 	gtk_widget_destroy (dialog);
-	gtk_mr_scheme_window_update_title (mrwin, false);
 }
 
 /*
