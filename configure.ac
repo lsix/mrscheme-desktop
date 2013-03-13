@@ -1,7 +1,7 @@
 dnl Process this file with autoconf to produce a configure script.
 dnl Created by Anjuta application wizard.
 
-AC_INIT(mrscheme_desktop, 0.2)
+AC_INIT(mrscheme_desktop, 0.3)
 
 AC_CONFIG_HEADERS([config.h])
 
