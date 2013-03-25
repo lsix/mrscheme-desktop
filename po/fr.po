@@ -31,7 +31,7 @@ msgid ""
 " Original project availalble at https://www-licence.ufr-info-p6.jussieu.fr/"
 "lmd/licence/2012/ue/LI101-2012oct/MrScheme/mrscheme.html"
 msgstr ""
-"D'après le projet original MrScheme disponnible à l'adresse suivante :"
+"D'apres le projet original MrScheme disponnible a l'adresse suivante :"
 "https://www-licence.ufr-info-p6.jussieu.fr/lmd/licence/2012/ue/LI101-2012oct/"
 "MrScheme/mrscheme.html"
 
@@ -105,7 +105,7 @@ msgstr "Fermer la fenetre"
 
 #: ../src/gtk-mr-scheme-window.c:370
 msgid "_About (Desktop (MrScheme))"
-msgstr "À propos de (Desktop (MrScheme))"
+msgstr "A propos de (Desktop (MrScheme))"
 
 #: ../src/gtk-mr-scheme-window.c:448
 msgid ""
