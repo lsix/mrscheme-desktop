@@ -32,8 +32,6 @@ G_BEGIN_DECLS
 #define GTK_IS_MR_SCHEME_WINDOW_CLASS(klass)  (G_TYPE_CHECK_CLASS_TYPE ((klass), GTK_TYPE_MR_SCHEME_WINDOW))
 #define GTK_MR_SCHEME_WINDOW_GET_CLASS(obj)   (G_TYPE_INSTANCE_GET_CLASS ((obj), GTK_TYPE_MR_SCHEME_WINDOW, GtkMrSchemeWindowClass))
 
-#define GTK_MR_SCHEME_WINDOW_TITLE            "(Desktop (MrScheme))"
-
 typedef struct _GtkMrSchemeWindowClass GtkMrSchemeWindowClass;
 typedef struct _GtkMrSchemeWindow GtkMrSchemeWindow;
 

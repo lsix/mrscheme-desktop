@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.1\n"
 "Report-Msgid-Bugs-To: lancelot.six@lip6.fr\n"
-"POT-Creation-Date: 2013-01-09 13:54+0100\n"
+"POT-Creation-Date: 2013-03-25 16:50+0100\n"
 "PO-Revision-Date: 2012-12-19 15:47+0100\n"
 "Last-Translator: Lancelot SIX <lancelot.six@lip6.fr>\n"
 "Language-Team: French\n"
@@ -17,79 +17,97 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: ../src/gtk-mr-scheme-window.c:206
+#: ../src/gtk-mr-scheme-window.c:208
 msgid "Open"
 msgstr "Ouvrir"
 
-#: ../src/gtk-mr-scheme-window.c:241
+#: ../src/gtk-mr-scheme-window.c:244
 msgid "Save as"
 msgstr "Enregistrer sous..."
 
-#: ../src/gtk-mr-scheme-window.c:313
+#: ../src/gtk-mr-scheme-window.c:305
+msgid ""
+"Desktop version of MrScheme.\n"
+" Original project availalble at https://www-licence.ufr-info-p6.jussieu.fr/"
+"lmd/licence/2012/ue/LI101-2012oct/MrScheme/mrscheme.html"
+msgstr ""
+"D'après le projet original MrScheme disponnible à l'adresse suivante :"
+"https://www-licence.ufr-info-p6.jussieu.fr/lmd/licence/2012/ue/LI101-2012oct/"
+"MrScheme/mrscheme.html"
+
+#: ../src/gtk-mr-scheme-window.c:336
 msgid "_File"
 msgstr "_Fichier"
 
-#: ../src/gtk-mr-scheme-window.c:315
+#: ../src/gtk-mr-scheme-window.c:338
 msgid "E_xecute"
 msgstr "E_xecuter"
 
-#: ../src/gtk-mr-scheme-window.c:334
+#: ../src/gtk-mr-scheme-window.c:340
+msgid "_Help"
+msgstr "_Aide"
+
+#: ../src/gtk-mr-scheme-window.c:362
 msgid "_Open"
 msgstr "_Ouvrir"
 
-#: ../src/gtk-mr-scheme-window.c:334
+#: ../src/gtk-mr-scheme-window.c:362
 msgid "Open a scm file"
 msgstr "Ouvrir un fichier scheme"
 
-#: ../src/gtk-mr-scheme-window.c:335
+#: ../src/gtk-mr-scheme-window.c:363
 msgid "_Save"
 msgstr "_Enregistrer"
 
-#: ../src/gtk-mr-scheme-window.c:335
+#: ../src/gtk-mr-scheme-window.c:363
 msgid "Save the scm file"
 msgstr "Enregistrer le fichier scheme"
 
-#: ../src/gtk-mr-scheme-window.c:336
+#: ../src/gtk-mr-scheme-window.c:364
 msgid "_Run"
 msgstr "E_xecuter"
 
-#: ../src/gtk-mr-scheme-window.c:336
+#: ../src/gtk-mr-scheme-window.c:364
 msgid "Run the code"
 msgstr "Executer le programme"
 
-#: ../src/gtk-mr-scheme-window.c:337
+#: ../src/gtk-mr-scheme-window.c:365
 msgid "_Quit"
 msgstr "_Quiter"
 
-#: ../src/gtk-mr-scheme-window.c:337
+#: ../src/gtk-mr-scheme-window.c:365
 msgid "Quit the application"
 msgstr "Quiter l'application"
 
-#: ../src/gtk-mr-scheme-window.c:338
+#: ../src/gtk-mr-scheme-window.c:366
 msgid "Save _as..."
 msgstr "Enregistrer so_us..."
 
-#: ../src/gtk-mr-scheme-window.c:338
+#: ../src/gtk-mr-scheme-window.c:366
 msgid "Save the current program as"
 msgstr "Enregistrer sous"
 
-#: ../src/gtk-mr-scheme-window.c:339
+#: ../src/gtk-mr-scheme-window.c:367
 msgid "_New"
 msgstr "_Nouveau"
 
-#: ../src/gtk-mr-scheme-window.c:339
+#: ../src/gtk-mr-scheme-window.c:367
 msgid "Create a new file"
 msgstr "Nouvelle fenetre"
 
-#: ../src/gtk-mr-scheme-window.c:340
+#: ../src/gtk-mr-scheme-window.c:368
 msgid "_Close"
 msgstr "_Fermer"
 
-#: ../src/gtk-mr-scheme-window.c:340
+#: ../src/gtk-mr-scheme-window.c:368
 msgid "Close surrent window"
 msgstr "Fermer la fenetre"
 
-#: ../src/gtk-mr-scheme-window.c:414
+#: ../src/gtk-mr-scheme-window.c:370
+msgid "_About (Desktop (MrScheme))"
+msgstr "À propos de (Desktop (MrScheme))"
+
+#: ../src/gtk-mr-scheme-window.c:448
 msgid ""
 "Loading....\n"
 "If this message does not disappeare, please check your internet connection "

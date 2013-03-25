@@ -18,9 +18,11 @@
  */
 
 #include "gtk-mr-scheme-window.h"
+#include "config.h"
 #include <gdk/gdkkeysyms.h>
 #include <glib.h>
 #include <glib/gi18n.h>
+#include <gtk/gtkaboutdialog.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -76,10 +78,10 @@ gtk_mr_scheme_window_update_title (GtkMrSchemeWindow *window, bool modified)
 	gchar *newTitle;
 
 	newTitle = g_malloc ((
-	                      strlen (GTK_MR_SCHEME_WINDOW_TITLE)
+	                      strlen (PACKAGE_NAME)
 	                      + (window->fileName==NULL ? 0 : 3 + strlen (window->fileName))
 	                      + (modified ? 1 : 0)) * sizeof (gchar));
-	strcpy (newTitle, GTK_MR_SCHEME_WINDOW_TITLE);
+	strcpy (newTitle, PACKAGE_NAME);
 	if (window->fileName != NULL)
 	{
 		strcat (newTitle, " - ");
@@ -286,6 +288,26 @@ void run_scm_code(GObject *object, gpointer data)
 	gtk_mr_scheme_execute_program (mrwin->mrSchemeView);
 }
 
+void show_about_info (GObject *object, gpointer data)
+{
+	GtkWidget *dialog = gtk_about_dialog_new ();
+	gtk_about_dialog_set_license      (GTK_ABOUT_DIALOG (dialog),
+	                                   "This software is distributed under the terms of the GPL V3.0.\n You may find a copy of this lisence at http://www.gnu.org/licenses/gpl.html");
+	gtk_about_dialog_set_version      (GTK_ABOUT_DIALOG (dialog),
+	                                   PACKAGE_VERSION);
+	gtk_about_dialog_set_program_name (GTK_ABOUT_DIALOG (dialog),
+	                                   PACKAGE_NAME);
+	gtk_about_dialog_set_website      (GTK_ABOUT_DIALOG (dialog),
+	                                   PACKAGE_URL);
+	gtk_about_dialog_set_authors      (GTK_ABOUT_DIALOG (dialog),
+	                                   authors);
+	gtk_about_dialog_set_comments     (GTK_ABOUT_DIALOG (dialog),
+	                                   _("Desktop version of MrScheme.\n Original project availalble at https://www-licence.ufr-info-p6.jussieu.fr/lmd/licence/2012/ue/LI101-2012oct/MrScheme/mrscheme.html"));
+	
+	gtk_dialog_run ( GTK_DIALOG(dialog)); // Just ignore return value since just one is acceptable
+	gtk_widget_destroy (dialog);
+}
+
 /******************************************************************************
  *                                                                            *
  *                             Public interface                               *
@@ -315,6 +337,11 @@ gtk_mr_scheme_window_init (GtkMrSchemeWindow *gtk_mr_scheme_window)
 	GtkWidget *fMen = gtk_menu_new ();
 	GtkWidget *exec = gtk_menu_item_new_with_mnemonic (_("E_xecute"));
 	GtkWidget *eMen = gtk_menu_new ();
+	GtkWidget *help = gtk_menu_item_new_with_mnemonic (_("_Help"));
+	GtkWidget *hMen = gtk_menu_new ();
+
+	// Menu items without actions.
+	GtkWidget *about;
 
 	gtk_mr_scheme_window->fileName = NULL;
 	// widgets for the toolbar_item_type
@@ -324,7 +351,7 @@ gtk_mr_scheme_window_init (GtkMrSchemeWindow *gtk_mr_scheme_window)
 	gtk_mr_scheme_window->mrSchemeView = GTK_MR_SCHEME (gtk_mr_scheme_new ());
 	
 	// Initialize the top window
-	gtk_window_set_title (GTK_WINDOW (gtk_mr_scheme_window), GTK_MR_SCHEME_WINDOW_TITLE);
+	gtk_window_set_title (GTK_WINDOW (gtk_mr_scheme_window), PACKAGE_NAME);
 	gtk_window_set_default_size (GTK_WINDOW (gtk_mr_scheme_window), 800, 600);
 	GTK_WINDOW (gtk_mr_scheme_window)->type = GTK_WINDOW_TOPLEVEL;
 
@@ -340,6 +367,8 @@ gtk_mr_scheme_window_init (GtkMrSchemeWindow *gtk_mr_scheme_window)
 	newWin = gtk_action_new ("New",    _("_New"),        _("Create a new file"),           GTK_STOCK_NEW);
 	close  = gtk_action_new ("Close",  _("_Close"),      _("Close surrent window"),        GTK_STOCK_CLOSE);
 
+	about = gtk_menu_item_new_with_mnemonic ( _("_About (Desktop (MrScheme))"));
+	
 	/* Exit when the window is closed */
 	g_signal_connect (gtk_mr_scheme_window, "destroy",  G_CALLBACK (close_mr_scheme_window), gtk_mr_scheme_window);
 	g_signal_connect (quit,      "activate", G_CALLBACK (gtk_main_quit),          gtk_mr_scheme_window);
@@ -349,6 +378,7 @@ gtk_mr_scheme_window_init (GtkMrSchemeWindow *gtk_mr_scheme_window)
 	g_signal_connect (saveAs,    "activate", G_CALLBACK (save_as_scm_file),       gtk_mr_scheme_window);
 	g_signal_connect (close,     "activate", G_CALLBACK (close_mr_scheme_window), gtk_mr_scheme_window);
 	g_signal_connect (newWin,    "activate", G_CALLBACK (new_mr_scheme_window),   NULL);
+	g_signal_connect (about,     "activate", G_CALLBACK (show_about_info),        gtk_mr_scheme_window);
 
 	g_signal_connect (gtk_mr_scheme_window->mrSchemeView, "mrschemeready", G_CALLBACK (local_view_ready), gtk_mr_scheme_window);
 	
@@ -381,6 +411,7 @@ gtk_mr_scheme_window_init (GtkMrSchemeWindow *gtk_mr_scheme_window)
 
 	gtk_menu_shell_append (GTK_MENU_SHELL (mBar), file);
 	gtk_menu_shell_append (GTK_MENU_SHELL (mBar), exec);
+	gtk_menu_shell_append (GTK_MENU_SHELL (mBar), help);
 	gtk_menu_item_set_submenu (GTK_MENU_ITEM (file), fMen);
 	gtk_menu_shell_append (GTK_MENU_SHELL (fMen), gtk_action_create_menu_item (newWin));
 	gtk_menu_shell_append (GTK_MENU_SHELL (fMen), gtk_separator_menu_item_new ());
@@ -392,6 +423,8 @@ gtk_mr_scheme_window_init (GtkMrSchemeWindow *gtk_mr_scheme_window)
 	gtk_menu_shell_append (GTK_MENU_SHELL (fMen), gtk_action_create_menu_item (quit));
 	gtk_menu_item_set_submenu (GTK_MENU_ITEM (exec), eMen);
 	gtk_menu_shell_append (GTK_MENU_SHELL (eMen), gtk_action_create_menu_item (run));
+	gtk_menu_item_set_submenu (GTK_MENU_ITEM (help), hMen);
+	gtk_menu_shell_append (GTK_MENU_SHELL (hMen), about);
 
 	gtk_box_pack_start (GTK_BOX (vBox), mBar, false, true, 0);
 
