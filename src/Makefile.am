@@ -8,7 +8,7 @@ AM_CPPFLAGS = \
 	-DPACKAGE_LOCALE_DIR=\""$(localedir)"\" \
 	-DPACKAGE_SRC_DIR=\""$(srcdir)"\" \
 	-DPACKAGE_DATA_DIR=\""$(pkgdatadir)"\" \
-	$(gtk2_CFLAGS) $(webkit_CFLAGS)
+	$(gtk2_CFLAGS) $(webkit_CFLAGS) $(curl_CFLAGS)
 
 AM_CFLAGS =\
 	 -Wall\
@@ -21,11 +21,12 @@ mrscheme_desktop_SOURCES = \
 	gtk-mr-scheme.c \
 	gtk-mr-scheme.h \
 	gtk-mr-scheme-window.c \
-	gtk-mr-scheme-window.h
+	gtk-mr-scheme-window.h \
+	authors.h
 
 mrscheme_desktop_LDFLAGS = \
 	-Wl,--export-dynamic
 
-mrscheme_desktop_LDADD = $(gtk2_LIBS) $(webkit_LIBS) $(LIBINTL)
+mrscheme_desktop_LDADD = $(gtk2_LIBS) $(webkit_LIBS) $(curl_LIBS)  $(LIBINTL)
 
 

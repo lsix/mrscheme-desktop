@@ -18,12 +18,47 @@
  */
 
 #include "gtk-mr-scheme.h"
-#include <string.h>
-#include <stdlib.h>
-#include <stdio.h>
 #include <JavaScriptCore/JavaScript.h>
+#include <curl/curl.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 G_DEFINE_TYPE (GtkMrScheme, gtk_mr_scheme, WEBKIT_TYPE_WEB_VIEW);
+
+/******************************************************************************
+ *                                                                            *
+ *                Decide if which version to use between local                *
+ *                     and remote (based on network status)                   *
+ *                                                                            *
+ ******************************************************************************/
+ int use_network_version() {
+ 	CURL*    curl;
+	CURLcode res;
+	bool     ret;
+
+	curl = curl_easy_init();
+
+	if (curl) {
+		curl_easy_setopt(curl, CURLOPT_URL, MRSCHEME_WEB_BASE "/VERSION");
+		curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
+
+		res = curl_easy_perform(curl);
+		if (res==CURLE_OK) {
+			/* Eventually decide on the version number. Currently only
+			 * check that network is up
+			 */
+			ret = true;
+		} else {
+			ret = false;
+		}
+
+		curl_easy_cleanup (curl);
+	} else {
+		ret = false;
+	}
+	return ret;
+ }
 
 /******************************************************************************
  *                                                                            * 
@@ -34,6 +69,9 @@ G_DEFINE_TYPE (GtkMrScheme, gtk_mr_scheme, WEBKIT_TYPE_WEB_VIEW);
 enum {
 	READY,
 	CONTENT_CHANGED,
+	CONTENT_LOAD_RUEST,
+	CONTENT_SAVE_REQUEST,
+	NEW_FILE_REQUEST,
 	LAST_SIGNAL
 };
 
@@ -103,9 +141,55 @@ static JSValueRef codeChangedRawCallback(JSContextRef     ctx,
 	return JSValueMakeBoolean (ctx, true);
 }
 
+// When Javascript calls MrSchemeDesktop.loadFile(), the 
+// content-load-request signal is emmited by the current widget.
+static JSValueRef loadFileReqCallback(JSContextRef     ctx,
+                                      JSObjectRef      function,
+                                      JSObjectRef      thisObject,
+                                      size_t           argumentCount,
+                                      const JSValueRef arguments[],
+                                      JSValueRef       * exception) {
+	GtkMrScheme *mrScheme = GTK_MR_SCHEME (JSObjectGetPrivate (thisObject));
+	g_signal_emit (G_OBJECT (mrScheme), widget_signals[CONTENT_LOAD_RUEST], 0);
+
+	return JSValueMakeBoolean (ctx, true);
+}
+
+// When Javascript calls MrSchemeDesktop.safeFile(), the 
+// content-save-request signal is emmited by the current widget.
+static JSValueRef saveFileReqCallback(JSContextRef     ctx,
+                                      JSObjectRef      function,
+                                      JSObjectRef      thisObject,
+                                      size_t           argumentCount,
+                                      const JSValueRef arguments[],
+                                      JSValueRef       * exception) {
+	GtkMrScheme *mrScheme = GTK_MR_SCHEME (JSObjectGetPrivate (thisObject));
+	g_signal_emit (G_OBJECT (mrScheme), widget_signals[CONTENT_SAVE_REQUEST], 0);
+
+	return JSValueMakeBoolean (ctx, true);
+}
+
+
+// When Javascript calls MrSchemeDesktop.newFile(), the 
+// new-file-file signal is emmited by the current widget.
+static JSValueRef newFileReqCallback(JSContextRef     ctx,
+                                     JSObjectRef      function,
+                                     JSObjectRef      thisObject,
+                                     size_t           argumentCount,
+                                     const JSValueRef arguments[],
+                                     JSValueRef       * exception) {
+	GtkMrScheme *mrScheme = GTK_MR_SCHEME (JSObjectGetPrivate (thisObject));
+	g_signal_emit (G_OBJECT (mrScheme), widget_signals[NEW_FILE_REQUEST], 0);
+
+	return JSValueMakeBoolean (ctx, true);
+}
+
 static JSStaticFunction StaticFunctions[] = {
-    { "codeChanged", codeChangedRawCallback, kJSPropertyAttributeNone },
-    { 0, 0, 0 }
+	{ "codeChanged", codeChangedRawCallback, kJSPropertyAttributeNone },
+	{ "loadFile",    loadFileReqCallback,    kJSPropertyAttributeNone },
+	{ "saveFile",    saveFileReqCallback,    kJSPropertyAttributeNone },
+	{ "newFile",     newFileReqCallback,     kJSPropertyAttributeNone },
+	{ 0, 0, 0 }
 };
 
 /*
@@ -149,6 +233,10 @@ after_load_web_view_cb(GObject *obj, gpointer data)
 {
 	GtkMrScheme *mrScheme = GTK_MR_SCHEME (obj);
 
+	/* TODO Put those elements in the view instead of in
+	 * this controller.
+	 */
+	
 	// Registers the MrSchemeDesktop javascript object
 	createMrSchemeJSObject (mrScheme);
 	
@@ -157,19 +245,20 @@ after_load_web_view_cb(GObject *obj, gpointer data)
 		"var elt = document.getElementById('Title');\
 		elt.style.height = '0px';\
 		elt.style.visibility = 'hidden';");
+	/*
+	*webkit_web_view_execute_script(WEBKIT_WEB_VIEW (mrScheme),
+	*	"var elt = document.getElementById('menu');\
+	*	elt.style.height = '0px';\
+	*	elt.style.visibility = 'hidden';");
+	*/
 	webkit_web_view_execute_script(WEBKIT_WEB_VIEW (mrScheme),
-		"var elt = document.getElementById('menu');\
+		"var elt = document.getElementById('Help');\
 		elt.style.height = '0px';\
 		elt.style.visibility = 'hidden';");
 	webkit_web_view_execute_script(WEBKIT_WEB_VIEW (mrScheme),
 		"var elt = document.getElementById('copyright');\
 		elt.style.height = '0px';\
 		elt.style.visibility = 'hidden';");
-
-	// TODO Uncomment when codemirror used by mrschemeDesktop is updated.
-	// Get the global object from javascript context
-	//webkit_web_view_execute_script(WEBKIT_WEB_VIEW (mrScheme),
-	//	"MrScheme.editor.on ('change', function(a, b){MrSchemeDesktop.codeChanged();})");
 
 	g_signal_emit (obj, widget_signals[READY], 0);
 }
@@ -178,7 +267,7 @@ static void
 gtk_mr_scheme_init (GtkMrScheme *gtk_mr_scheme)
 {
 	webkit_web_view_load_uri (WEBKIT_WEB_VIEW (gtk_mr_scheme),
-	                          MRECHEME_WEB_URI);
+	                          (use_network_version()?MRSCHEME_WEB_BASE "mrscheme.html" : MRSCHEME_LOCAL_BASE "mrscheme.html" ));
 	g_signal_connect(gtk_mr_scheme,
 	                 "load-finished",
 	                 G_CALLBACK(after_load_web_view_cb),
@@ -211,6 +300,36 @@ gtk_mr_scheme_class_init (GtkMrSchemeClass *klass)
 		              0);
 	widget_signals[CONTENT_CHANGED] =
 		g_signal_new ("content-changed",
+		              G_TYPE_FROM_CLASS (object_class),
+		              G_SIGNAL_RUN_FIRST,
+		              0,
+		          	  NULL,
+		              NULL,
+		              gtk_marshal_VOID__VOID,
+		              G_TYPE_NONE,
+		              0);
+	widget_signals[CONTENT_LOAD_RUEST] =
+		g_signal_new ("content-load-request",
+		              G_TYPE_FROM_CLASS (object_class),
+		              G_SIGNAL_RUN_FIRST,
+		              0,
+		          	  NULL,
+		              NULL,
+		              gtk_marshal_VOID__VOID,
+		              G_TYPE_NONE,
+		              0);
+	widget_signals[CONTENT_SAVE_REQUEST] =
+		g_signal_new ("content-save-request",
+		              G_TYPE_FROM_CLASS (object_class),
+		              G_SIGNAL_RUN_FIRST,
+		              0,
+		          	  NULL,
+		              NULL,
+		              gtk_marshal_VOID__VOID,
+		              G_TYPE_NONE,
+		              0);
+	widget_signals[NEW_FILE_REQUEST] =
+		g_signal_new ("new-file-request",
 		              G_TYPE_FROM_CLASS (object_class),
 		              G_SIGNAL_RUN_FIRST,
 		              0,

@@ -1,0 +1,3 @@
+[submodule "MrScheme"]
+	path = MrScheme
+	url = https://git.gitorious.org/mrscheme-desktop/mrscheme.git

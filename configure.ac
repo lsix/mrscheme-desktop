@@ -1,7 +1,7 @@
 dnl Process this file with autoconf to produce a configure script.
 dnl Created by Anjuta application wizard.
 
-AC_INIT([(Desktop (MrScheme))], 0.3, lancelot@lancelotsix.com, mrscheme-desktop, https://github.com/lancelotsix/mrscheme-desktop)
+AC_INIT([(Desktop (MrScheme))], 0.4, lancelot@lancelotsix.com, mrscheme-desktop, https://github.com/lancelotsix/mrscheme-desktop)
 
 AC_CONFIG_HEADERS([config.h])
 
@@ -14,6 +14,10 @@ AC_PROG_CC
 AC_PROG_CXX
 
 IT_PROG_INTLTOOL([0.35.0])
+
+if [[ ! -d MrScheme ]]
+then AC_MSG_ERROR([Please checkout MrScheme from https://depot-ens.ufr-info-p6.jussieu.fr/svn/ens/LI101/Outils/MrScheme/src into ./MrScheme])
+fi
 
 AC_CHECK_HEADER_STDBOOL
 AC_FUNC_MALLOC
@@ -29,6 +33,7 @@ LT_INIT
 
 PKG_CHECK_MODULES(gtk2, [gtk+-2.0])
 PKG_CHECK_MODULES(webkit, [webkit-1.0])
+PKG_CHECK_MODULES(curl, [libcurl])
 
 
 AC_OUTPUT([ po/Makefile.in

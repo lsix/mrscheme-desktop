@@ -310,6 +310,16 @@ void show_about_info (GObject *object, gpointer data)
 	gtk_widget_destroy (dialog);
 }
 
+/*
+ * Updates the window title when the content of the code editor changed
+ * (adds a star at its end to nofify the user that the changes on the buffer
+ * are unsaved)
+ * */
+void on_code_changed_callback (GObject *object, gpointer data)
+{
+	gtk_mr_scheme_window_update_title (GTK_MR_SCHEME_WINDOW (data), true);
+}
+
 /******************************************************************************
  *                                                                            *
  *                             Public interface                               *
@@ -346,8 +356,9 @@ gtk_mr_scheme_window_init (GtkMrSchemeWindow *gtk_mr_scheme_window)
 	GtkWidget *about;
 
 	gtk_mr_scheme_window->fileName = NULL;
+	
 	// widgets for the toolbar_item_type
-	GtkWidget   *toolBar = gtk_toolbar_new ();
+	//GtkWidget   *toolBar = gtk_toolbar_new ();
 
 	// Initialize the main component
 	gtk_mr_scheme_window->mrSchemeView = GTK_MR_SCHEME (gtk_mr_scheme_new ());
@@ -382,7 +393,12 @@ gtk_mr_scheme_window_init (GtkMrSchemeWindow *gtk_mr_scheme_window)
 	g_signal_connect (newWin,    "activate", G_CALLBACK (new_mr_scheme_window),   NULL);
 	g_signal_connect (about,     "activate", G_CALLBACK (show_about_info),        gtk_mr_scheme_window);
 
-	g_signal_connect (gtk_mr_scheme_window->mrSchemeView, "mrschemeready", G_CALLBACK (local_view_ready), gtk_mr_scheme_window);
+	/* Connect signals associated with the mrScheme view widget */
+	g_signal_connect (gtk_mr_scheme_window->mrSchemeView, "mrschemeready",        G_CALLBACK (local_view_ready), gtk_mr_scheme_window);
+	g_signal_connect (gtk_mr_scheme_window->mrSchemeView, "content-changed",      G_CALLBACK (on_code_changed_callback), gtk_mr_scheme_window);
+	g_signal_connect (gtk_mr_scheme_window->mrSchemeView, "content-load-request", G_CALLBACK (load_scm_file), gtk_mr_scheme_window);
+	g_signal_connect (gtk_mr_scheme_window->mrSchemeView, "content-save-request", G_CALLBACK (save_as_scm_file), gtk_mr_scheme_window);
+	g_signal_connect (gtk_mr_scheme_window->mrSchemeView, "new-file-request",     G_CALLBACK (new_mr_scheme_window), NULL);
 	
 	/* Associate key shortcuts */
 	gtk_action_set_accel_path (open,   "<MrSchemeCode>/open");
@@ -430,16 +446,16 @@ gtk_mr_scheme_window_init (GtkMrSchemeWindow *gtk_mr_scheme_window)
 
 	gtk_box_pack_start (GTK_BOX (vBox), mBar, false, true, 0);
 
-	gtk_toolbar_set_style(GTK_TOOLBAR(toolBar), GTK_TOOLBAR_ICONS);
+	//gtk_toolbar_set_style(GTK_TOOLBAR(toolBar), GTK_TOOLBAR_ICONS);
 
-	gtk_toolbar_insert (GTK_TOOLBAR (toolBar), GTK_TOOL_ITEM (gtk_action_create_tool_item (newWin)), -1);
-	gtk_toolbar_insert (GTK_TOOLBAR (toolBar), gtk_separator_tool_item_new (),                       -1);
-	gtk_toolbar_insert (GTK_TOOLBAR (toolBar), GTK_TOOL_ITEM (gtk_action_create_tool_item (open)),   -1);
-	gtk_toolbar_insert (GTK_TOOLBAR (toolBar), GTK_TOOL_ITEM (gtk_action_create_tool_item (saveAs)), -1);
-	gtk_toolbar_insert (GTK_TOOLBAR (toolBar), GTK_TOOL_ITEM (gtk_action_create_tool_item (save)),   -1);
-	gtk_toolbar_insert (GTK_TOOLBAR (toolBar), gtk_separator_tool_item_new (),                       -1);
-	gtk_toolbar_insert (GTK_TOOLBAR (toolBar), GTK_TOOL_ITEM (gtk_action_create_tool_item (run)),    -1);
-	gtk_box_pack_start (GTK_BOX (vBox), toolBar, false, true, 0);
+	//gtk_toolbar_insert (GTK_TOOLBAR (toolBar), GTK_TOOL_ITEM (gtk_action_create_tool_item (newWin)), -1);
+	//gtk_toolbar_insert (GTK_TOOLBAR (toolBar), gtk_separator_tool_item_new (),                       -1);
+	//gtk_toolbar_insert (GTK_TOOLBAR (toolBar), GTK_TOOL_ITEM (gtk_action_create_tool_item (open)),   -1);
+	//gtk_toolbar_insert (GTK_TOOLBAR (toolBar), GTK_TOOL_ITEM (gtk_action_create_tool_item (saveAs)), -1);
+	//gtk_toolbar_insert (GTK_TOOLBAR (toolBar), GTK_TOOL_ITEM (gtk_action_create_tool_item (save)),   -1);
+	//gtk_toolbar_insert (GTK_TOOLBAR (toolBar), gtk_separator_tool_item_new (),                       -1);
+	//gtk_toolbar_insert (GTK_TOOLBAR (toolBar), GTK_TOOL_ITEM (gtk_action_create_tool_item (run)),    -1);
+	//gtk_box_pack_start (GTK_BOX (vBox), toolBar, false, true, 0);
 
 	gtk_mr_scheme_window->viewContainer = gtk_scrolled_window_new (NULL,NULL);
 	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (gtk_mr_scheme_window->viewContainer),

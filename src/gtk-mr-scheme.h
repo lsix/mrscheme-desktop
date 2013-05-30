@@ -31,7 +31,8 @@ G_BEGIN_DECLS
 #define GTK_IS_MR_SCHEME_CLASS(klass)  (G_TYPE_CHECK_CLASS_TYPE ((klass), GTK_TYPE_MR_SCHEME))
 #define GTK_MR_SCHEME_GET_CLASS(obj)   (G_TYPE_INSTANCE_GET_CLASS ((obj), GTK_TYPE_MR_SCHEME, GtkMrSchemeClass))
 
-#define MRECHEME_WEB_URI "https://www-licence.ufr-info-p6.jussieu.fr/lmd/licence/2012/ue/LI101-2012oct/MrScheme/mrscheme.html"
+#define MRSCHEME_WEB_BASE "https://www-licence.ufr-info-p6.jussieu.fr/lmd/licence/2012/ue/LI101-2012oct/MrScheme/"
+#define MRSCHEME_LOCAL_BASE "file://" PACKAGE_DATA_DIR "/MrScheme/"
 
 typedef struct _GtkMrSchemeClass GtkMrSchemeClass;
 typedef struct _GtkMrScheme GtkMrScheme;
