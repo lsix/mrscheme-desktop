@@ -15,10 +15,6 @@ AC_PROG_CXX
 
 IT_PROG_INTLTOOL([0.35.0])
 
-if [[ ! -d MrScheme ]]
-then AC_MSG_ERROR([Please checkout MrScheme from https://depot-ens.ufr-info-p6.jussieu.fr/svn/ens/LI101/Outils/MrScheme/src into ./MrScheme])
-fi
-
 AC_CHECK_HEADER_STDBOOL
 AC_FUNC_MALLOC
 AC_TYPE_SIZE_T

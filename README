@@ -4,7 +4,32 @@ MrScheme is a light IDE used to program and run scheme programs.
 MrScheme-desktop develops a light gtk+ wrapper around the original
 MrScheme web application. The main interest of using this interface
 is the ability to load and save file from and to local filesystems
-without sandboxing limitations imposed by browsers.
+without sand boxing limitations imposed by browsers.
 
-To regenerate the make file, use "autoreconf -i", then you can use
-regular "./configure" "make" and "make install" process.
+Building
+========
+
+If your obtained those sources via SCM, you need make sure that
+all the submodules are present. To do so, you need to run :
+  $ git submodule init
+  $ git submodule updte
+
+This will populate the MrScheme directory needed for proper bundeling.
+
+You will also need to generate standard configure script. To do so, run
+  $ autoreconf --install
+
+After those steps or if you received the sources via a tarball, you can simply
+run the following command sequence to build the project :
+  $ ./configure
+  $ make
+
+Installing
+==========
+
+After the project have been successfully built, run the following :
+  $ make install
+
+Depending on how you configured the project, you might need super-user
+privileges to install it.
+
