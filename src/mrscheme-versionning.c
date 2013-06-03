@@ -92,8 +92,6 @@ char* get_remote_version() {
 			memcpy(ret, rem.data, rem.alread_downloaded);
 			ret[rem.alread_downloaded] = '\0';
 			rtrim(ret);
-
-			free (rem.data);
 		} else {
 			#ifdef DEBUG
 			fprintf(stderr, _("Underlying libcurl error : %d\n"), res);
@@ -101,6 +99,7 @@ char* get_remote_version() {
 			ret = NULL;
 		}
 
+		if (rem.data != NULL) free (rem.data);
 		curl_easy_cleanup (curl);
 	} else {
 		ret = NULL;
