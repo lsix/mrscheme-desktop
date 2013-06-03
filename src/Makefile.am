@@ -22,6 +22,8 @@ mrscheme_desktop_SOURCES = \
 	gtk-mr-scheme.h \
 	gtk-mr-scheme-window.c \
 	gtk-mr-scheme-window.h \
+	mrscheme-versionning.c \
+	mrscheme-versionning.h \
 	authors.h
 
 mrscheme_desktop_LDFLAGS = \

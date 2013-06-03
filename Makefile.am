@@ -7,6 +7,7 @@ mrschemedir = $(datadir)/$(PACKAGE)
 nobase_dist_mrscheme_DATA = \
 	MrScheme/LICENSE \
 	MrScheme/TODO \
+	MrScheme/VERSION \
 	MrScheme/mrscheme.html \
 	MrScheme/mrscheme.css \
 	MrScheme/mrscheme.js \

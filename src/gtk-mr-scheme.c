@@ -19,46 +19,13 @@
 
 #include "gtk-mr-scheme.h"
 #include <JavaScriptCore/JavaScript.h>
-#include <curl/curl.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "mrscheme-versionning.h"
 
 G_DEFINE_TYPE (GtkMrScheme, gtk_mr_scheme, WEBKIT_TYPE_WEB_VIEW);
 
-/******************************************************************************
- *                                                                            *
- *                Decide if which version to use between local                *
- *                     and remote (based on network status)                   *
- *                                                                            *
- ******************************************************************************/
- int use_network_version() {
- 	CURL*    curl;
-	CURLcode res;
-	bool     ret;
-
-	curl = curl_easy_init();
-
-	if (curl) {
-		curl_easy_setopt(curl, CURLOPT_URL, MRSCHEME_WEB_BASE "/VERSION");
-		curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
-
-		res = curl_easy_perform(curl);
-		if (res==CURLE_OK) {
-			/* Eventually decide on the version number. Currently only
-			 * check that network is up
-			 */
-			ret = true;
-		} else {
-			ret = false;
-		}
-
-		curl_easy_cleanup (curl);
-	} else {
-		ret = false;
-	}
-	return ret;
- }
 
 /******************************************************************************
  *                                                                            * 
@@ -267,7 +234,7 @@ static void
 gtk_mr_scheme_init (GtkMrScheme *gtk_mr_scheme)
 {
 	webkit_web_view_load_uri (WEBKIT_WEB_VIEW (gtk_mr_scheme),
-	                          (use_network_version()?MRSCHEME_WEB_BASE "mrscheme.html" : MRSCHEME_LOCAL_BASE "mrscheme.html" ));
+	                          (use_remote_version()==MR_SCHEME_REMOTE?MRSCHEME_WEB_BASE "mrscheme.html" : MRSCHEME_LOCAL_BASE "mrscheme.html" ));
 	g_signal_connect(gtk_mr_scheme,
 	                 "load-finished",
 	                 G_CALLBACK(after_load_web_view_cb),
