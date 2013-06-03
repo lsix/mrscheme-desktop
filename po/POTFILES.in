@@ -1,1 +1,3 @@
 src/gtk-mr-scheme-window.c
+src/gtk-mr-scheme.c
+src/mrscheme-versionning.c

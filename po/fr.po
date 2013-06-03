@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.1\n"
 "Report-Msgid-Bugs-To: lancelot.six@lip6.fr\n"
-"POT-Creation-Date: 2013-03-25 16:50+0100\n"
+"POT-Creation-Date: 2013-06-03 22:04+0200\n"
 "PO-Revision-Date: 2012-12-19 15:47+0100\n"
 "Last-Translator: Lancelot SIX <lancelot.six@lip6.fr>\n"
 "Language-Team: French\n"
@@ -17,15 +17,15 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: ../src/gtk-mr-scheme-window.c:208
+#: ../src/gtk-mr-scheme-window.c:210
 msgid "Open"
 msgstr "Ouvrir"
 
-#: ../src/gtk-mr-scheme-window.c:244
+#: ../src/gtk-mr-scheme-window.c:246
 msgid "Save as"
 msgstr "Enregistrer sous..."
 
-#: ../src/gtk-mr-scheme-window.c:305
+#: ../src/gtk-mr-scheme-window.c:307
 msgid ""
 "Desktop version of MrScheme.\n"
 " Original project availalble at https://www-licence.ufr-info-p6.jussieu.fr/"
@@ -35,79 +35,79 @@ msgstr ""
 "https://www-licence.ufr-info-p6.jussieu.fr/lmd/licence/2012/ue/LI101-2012oct/"
 "MrScheme/mrscheme.html"
 
-#: ../src/gtk-mr-scheme-window.c:336
+#: ../src/gtk-mr-scheme-window.c:348
 msgid "_File"
 msgstr "_Fichier"
 
-#: ../src/gtk-mr-scheme-window.c:338
+#: ../src/gtk-mr-scheme-window.c:350
 msgid "E_xecute"
 msgstr "E_xecuter"
 
-#: ../src/gtk-mr-scheme-window.c:340
+#: ../src/gtk-mr-scheme-window.c:352
 msgid "_Help"
 msgstr "_Aide"
 
-#: ../src/gtk-mr-scheme-window.c:362
+#: ../src/gtk-mr-scheme-window.c:375
 msgid "_Open"
 msgstr "_Ouvrir"
 
-#: ../src/gtk-mr-scheme-window.c:362
+#: ../src/gtk-mr-scheme-window.c:375
 msgid "Open a scm file"
 msgstr "Ouvrir un fichier scheme"
 
-#: ../src/gtk-mr-scheme-window.c:363
+#: ../src/gtk-mr-scheme-window.c:376
 msgid "_Save"
 msgstr "_Enregistrer"
 
-#: ../src/gtk-mr-scheme-window.c:363
+#: ../src/gtk-mr-scheme-window.c:376
 msgid "Save the scm file"
 msgstr "Enregistrer le fichier scheme"
 
-#: ../src/gtk-mr-scheme-window.c:364
+#: ../src/gtk-mr-scheme-window.c:377
 msgid "_Run"
 msgstr "E_xecuter"
 
-#: ../src/gtk-mr-scheme-window.c:364
+#: ../src/gtk-mr-scheme-window.c:377
 msgid "Run the code"
 msgstr "Executer le programme"
 
-#: ../src/gtk-mr-scheme-window.c:365
+#: ../src/gtk-mr-scheme-window.c:378
 msgid "_Quit"
 msgstr "_Quiter"
 
-#: ../src/gtk-mr-scheme-window.c:365
+#: ../src/gtk-mr-scheme-window.c:378
 msgid "Quit the application"
 msgstr "Quiter l'application"
 
-#: ../src/gtk-mr-scheme-window.c:366
+#: ../src/gtk-mr-scheme-window.c:379
 msgid "Save _as..."
 msgstr "Enregistrer so_us..."
 
-#: ../src/gtk-mr-scheme-window.c:366
+#: ../src/gtk-mr-scheme-window.c:379
 msgid "Save the current program as"
 msgstr "Enregistrer sous"
 
-#: ../src/gtk-mr-scheme-window.c:367
+#: ../src/gtk-mr-scheme-window.c:380
 msgid "_New"
 msgstr "_Nouveau"
 
-#: ../src/gtk-mr-scheme-window.c:367
+#: ../src/gtk-mr-scheme-window.c:380
 msgid "Create a new file"
 msgstr "Nouvelle fenetre"
 
-#: ../src/gtk-mr-scheme-window.c:368
+#: ../src/gtk-mr-scheme-window.c:381
 msgid "_Close"
 msgstr "_Fermer"
 
-#: ../src/gtk-mr-scheme-window.c:368
+#: ../src/gtk-mr-scheme-window.c:381
 msgid "Close surrent window"
 msgstr "Fermer la fenetre"
 
-#: ../src/gtk-mr-scheme-window.c:370
+#: ../src/gtk-mr-scheme-window.c:383
 msgid "_About (Desktop (MrScheme))"
 msgstr "A propos de (Desktop (MrScheme))"
 
-#: ../src/gtk-mr-scheme-window.c:448
+#: ../src/gtk-mr-scheme-window.c:466
 msgid ""
 "Loading....\n"
 "If this message does not disappeare, please check your internet connection "
@@ -121,3 +121,39 @@ msgstr ""
 "connectez vous au site \n"
 "https://www-licence.ufr-info-p6.jussieu.fr/lmd/licence/2012/ue/LI101-2012oct/"
 "MrScheme/mrscheme.html"
+
+#: ../src/mrscheme-versionning.c:99
+#, c-format
+msgid "Underlying libcurl error : %d\n"
+msgstr "Erreur de libcurl sous jacente : %d\n"
+
+#: ../src/mrscheme-versionning.c:145
+#, c-format
+msgid ""
+"Unable to guess the version of local MrScheme at %s. Please check your "
+"installation\n"
+msgstr ""
+"Impossible de lire la version locale de MrScheme dans %s. Merci de verifier "
+"l'installation.\n"
+
+#: ../src/mrscheme-versionning.c:165
+#, c-format
+msgid ""
+"Remote version : %s\n"
+"Local version : %s\n"
+msgstr ""
+"Version distante : %s\n"
+"Version locale   : %s\n"
+
+#: ../src/mrscheme-versionning.c:182
+#, c-format
+msgid "Using %s version of MrScheme\n"
+msgstr "Utilisation de la version %s de MrScheme\n"
+
+#: ../src/mrscheme-versionning.c:183
+msgid "local"
+msgstr "locale"
+
+#: ../src/mrscheme-versionning.c:183
+msgid "remote"
+msgstr "distante"

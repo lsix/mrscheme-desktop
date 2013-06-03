@@ -20,6 +20,7 @@
 #include "mrscheme-versionning.h"
 #include <ctype.h>
 #include <curl/curl.h>
+#include <glib/gi18n.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -95,7 +96,7 @@ char* get_remote_version() {
 			free (rem.data);
 		} else {
 			#ifdef DEBUG
-			fprintf(stderr, "Underlying libcurl error : %d\n", res);
+			fprintf(stderr, _("Underlying libcurl error : %d\n"), res);
 			#endif
 			ret = NULL;
 		}
@@ -141,8 +142,8 @@ char* get_local_version(){
 		fclose(loc_file);
 	} else {
 		#ifdef DEBUG
-		fprintf(stderr, "Unable to guess the version of local MrScheme at %s."
-		                " Please check your installation\n", local_path);
+		fprintf(stderr, _("Unable to guess the version of local MrScheme at %s."
+		                " Please check your installation\n"), local_path);
 		#endif
 		ret = NULL;
 	}
@@ -161,7 +162,7 @@ enum version_choice_t use_remote_version() {
 	int ret = 0;
 
 	#ifdef DEBUG
-	printf("Remote version : %s\nLocal version : %s\n",
+	printf(_("Remote version : %s\nLocal version : %s\n"),
 	       remote_version,
 	       local_version);
 	#endif
@@ -178,8 +179,8 @@ enum version_choice_t use_remote_version() {
 	}
 
 	#ifdef DEBUG
-	printf("Using %s version of MrScheme\n",
-	       (ret==MR_SCHEME_LOCAL?"local":"remote"));
+	printf(_("Using %s version of MrScheme\n"),
+	       (ret==MR_SCHEME_LOCAL?_("local"):_("remote")));
 	#endif
 
 	// Cleanup allocated memory
