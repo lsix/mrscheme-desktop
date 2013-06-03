@@ -1,4 +1,3 @@
-
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 4; tab-width: 4 -*- */ /*
  * mrscheme-desktop
  * Copyright (C) Lancelot SIX 2012 <lancelot.six@lip6.fr>
@@ -24,6 +23,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+/******************************************************************************
+ *                                                                            *
+ *                      Helper function internal to the                       *
+ *                         mrscheme-versionning module                        *
+ *                                                                            *
+ ******************************************************************************/
 
 /*
  * Remove all non printable character at the end of str. Replace them with
@@ -88,7 +94,9 @@ char* get_remote_version() {
 
 			free (rem.data);
 		} else {
+			#ifdef DEBUG
 			fprintf(stderr, "Underlying libcurl error : %d\n", res);
+			#endif
 			ret = NULL;
 		}
 
@@ -132,21 +140,31 @@ char* get_local_version(){
 		}
 		fclose(loc_file);
 	} else {
+		#ifdef DEBUG
 		fprintf(stderr, "Unable to guess the version of local MrScheme at %s."
 		                " Please check your installation\n", local_path);
+		#endif
 		ret = NULL;
 	}
 	return ret;
 }
 
+/******************************************************************************
+ *                                                                            *
+ *                     Implementats the public API of the                     *
+ *                        mrscheme-versionning module                         *
+ *                                                                            *
+ ******************************************************************************/
 enum version_choice_t use_remote_version() {
 	char* remote_version = get_remote_version();
 	char* local_version  = get_local_version();
 	int ret = 0;
 
+	#ifdef DEBUG
 	printf("Remote version : %s\nLocal version : %s\n",
 	       remote_version,
 	       local_version);
+	#endif
 
 	if (remote_version == NULL) {
 		// No internet. Only local version availalble
@@ -159,8 +177,10 @@ enum version_choice_t use_remote_version() {
 		}
 	}
 
+	#ifdef DEBUG
 	printf("Using %s version of MrScheme\n",
 	       (ret==MR_SCHEME_LOCAL?"local":"remote"));
+	#endif
 
 	// Cleanup allocated memory
 	if (remote_version) free (remote_version);
