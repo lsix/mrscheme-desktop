@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.1\n"
 "Report-Msgid-Bugs-To: lancelot.six@lip6.fr\n"
-"POT-Creation-Date: 2013-06-03 22:04+0200\n"
+"POT-Creation-Date: 2013-06-05 11:10+0200\n"
 "PO-Revision-Date: 2012-12-19 15:47+0100\n"
 "Last-Translator: Lancelot SIX <lancelot.six@lip6.fr>\n"
 "Language-Team: French\n"
@@ -108,26 +108,15 @@ msgid "_About (Desktop (MrScheme))"
 msgstr "A propos de (Desktop (MrScheme))"
 
 #: ../src/gtk-mr-scheme-window.c:466
-msgid ""
-"Loading....\n"
-"If this message does not disappeare, please check your internet connection "
-"or\n"
-"visit MrScheme website at\n"
-"https://www-licence.ufr-info-p6.jussieu.fr/lmd/licence/2012/ue/LI101-2012oct/"
-"MrScheme/mrscheme.html"
-msgstr ""
-"Chargement....\n"
-"Si ce message persiste, verifiez la connexion internet ou\n"
-"connectez vous au site \n"
-"https://www-licence.ufr-info-p6.jussieu.fr/lmd/licence/2012/ue/LI101-2012oct/"
-"MrScheme/mrscheme.html"
+msgid "Loading..."
+msgstr "Chargement..."
 
-#: ../src/mrscheme-versionning.c:99
+#: ../src/mrscheme-versionning.c:97
 #, c-format
 msgid "Underlying libcurl error : %d\n"
 msgstr "Erreur de libcurl sous jacente : %d\n"
 
-#: ../src/mrscheme-versionning.c:145
+#: ../src/mrscheme-versionning.c:144
 #, c-format
 msgid ""
 "Unable to guess the version of local MrScheme at %s. Please check your "
@@ -136,7 +125,7 @@ msgstr ""
 "Impossible de lire la version locale de MrScheme dans %s. Merci de verifier "
 "l'installation.\n"
 
-#: ../src/mrscheme-versionning.c:165
+#: ../src/mrscheme-versionning.c:164
 #, c-format
 msgid ""
 "Remote version : %s\n"
@@ -145,15 +134,16 @@ msgstr ""
 "Version distante : %s\n"
 "Version locale   : %s\n"
 
-#: ../src/mrscheme-versionning.c:182
+#: ../src/mrscheme-versionning.c:181
 #, c-format
 msgid "Using %s version of MrScheme\n"
 msgstr "Utilisation de la version %s de MrScheme\n"
 
-#: ../src/mrscheme-versionning.c:183
+#: ../src/mrscheme-versionning.c:182
 msgid "local"
 msgstr "locale"
 
-#: ../src/mrscheme-versionning.c:183
+#: ../src/mrscheme-versionning.c:182
 msgid "remote"
 msgstr "distante"
+

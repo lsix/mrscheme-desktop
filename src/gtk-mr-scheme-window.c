@@ -463,7 +463,7 @@ gtk_mr_scheme_window_init (GtkMrSchemeWindow *gtk_mr_scheme_window)
 
 	gtk_box_pack_start (GTK_BOX (vBox), gtk_mr_scheme_window->viewContainer, true, true, 0);
 
-	loadingMsg = gtk_label_new ( _("Loading....\nIf this message does not disappeare, please check your internet connection or\nvisit MrScheme website at\nhttps://www-licence.ufr-info-p6.jussieu.fr/lmd/licence/2012/ue/LI101-2012oct/MrScheme/mrscheme.html") );
+	loadingMsg = gtk_label_new ( _("Loading...") );
 	gtk_label_set_selectable (GTK_LABEL (loadingMsg), true);
 	gtk_scrolled_window_add_with_viewport (GTK_SCROLLED_WINDOW (gtk_mr_scheme_window->viewContainer), loadingMsg);
 	//gtk_container_add (GTK_CONTAINER (gtk_mr_scheme_window->viewContainer), loadingMsg);

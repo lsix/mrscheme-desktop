@@ -56,11 +56,12 @@ nobase_dist_mrscheme_DATA = \
 
 mrscheme_desktopdocdir = ${prefix}/doc/mrscheme_desktop
 mrscheme_desktopdoc_DATA = \
-	README\
-	COPYING\
-	AUTHORS\
-	ChangeLog\
-	INSTALL\
+	README \
+	COPYING \
+	LICENSE \
+	AUTHORS \
+	ChangeLog \
+	INSTALL \
 	NEWS
 
 
@@ -70,6 +71,7 @@ EXTRA_DIST = m4/ChangeLog  $(mrscheme_desktopdoc_DATA)
 # Remove doc directory on uninstall
 uninstall-local:
 	-rm -r $(mrscheme_desktopdocdir)
+	-rm -r $(mrschemedir)
 
 ACLOCAL_AMFLAGS = -I m4
 
