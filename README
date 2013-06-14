@@ -6,6 +6,19 @@ MrScheme web application. The main interest of using this interface
 is the ability to load and save file from and to local filesystems
 without sand boxing limitations imposed by browsers.
 
+System requirement
+==================
+
+To build this solution, you need some libraries present on your system :
+  * intltool         : http://freedesktop.org/wiki/Software/intltool/
+  * Gtk (>2.x)       : http://www.gtk.org/
+  * webkitgtk (>1.x) : http://webkitgtk.org/
+  * libcurl          : http://curl.haxx.se/libcurl/
+
+To build the solution, you also need a c compiler. Autotools (autoconf
+and automake) might also be required if you are not building the software
+from a tarball.
+
 Building
 ========
 
