@@ -1,9 +1,11 @@
 dnl Process this file with autoconf to produce a configure script.
 dnl Created by Anjuta application wizard.
 
-AC_INIT([(Desktop (MrScheme))], 0.4.1, lancelot@lancelotsix.com, mrscheme-desktop, https://github.com/lancelotsix/mrscheme-desktop)
+AC_INIT([(Desktop (MrScheme))], 0.4.1r1, lancelot@lancelotsix.com, mrscheme-desktop, https://gitorious.org/mrscheme-desktop)
 
 AC_CONFIG_HEADERS([config.h])
+
+AC_CONFIG_MACRO_DIR([m4])
 
 AM_INIT_AUTOMAKE([1.11 -Wall -Werror])
 AM_SILENT_RULES([no])
