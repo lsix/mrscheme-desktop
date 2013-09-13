@@ -59,6 +59,9 @@ GtkWidget* gtk_mr_scheme_new (void);
 /*
  * Returns the current state of the code as shown in the
  * mrScheme view
+ *
+ * Return: char* The data is allocated by the function but
+ * must be freed by the caller !
  * */
 gchar*     gtk_mr_scheme_get_scm_program (GtkMrScheme *mrScheme);
 

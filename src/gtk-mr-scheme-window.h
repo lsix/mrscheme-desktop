@@ -22,6 +22,7 @@
 
 #include "gtk-mr-scheme.h"
 #include <gtk/gtkwindow.h>
+#include <glib.h>
 
 G_BEGIN_DECLS
 
@@ -35,12 +36,11 @@ G_BEGIN_DECLS
 typedef struct _GtkMrSchemeWindowClass GtkMrSchemeWindowClass;
 typedef struct _GtkMrSchemeWindow GtkMrSchemeWindow;
 
-
-
 struct _GtkMrSchemeWindowClass
 {
 	GtkWindowClass parent_class;
 	gint numberOfInstances;
+	GSList* activeWindows;
 };
 
 struct _GtkMrSchemeWindow
@@ -50,6 +50,16 @@ struct _GtkMrSchemeWindow
 	GtkMrScheme* mrSchemeView;
 
 	gchar *fileName;
+	bool unsavedEdits;
+
+	/* Set of actions that can be performed on the window */
+	GtkAction*     open;
+	GtkAction*     save;
+	GtkAction*     run;
+	GtkAction*     quit;
+	GtkAction*     saveAs;
+	GtkAction*     newWin;
+	GtkAction*     close;
 };
 
 GType      gtk_mr_scheme_window_get_type (void) G_GNUC_CONST;
