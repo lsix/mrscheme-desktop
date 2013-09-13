@@ -143,6 +143,31 @@ save_file_as(GtkMrSchemeWindow* window, const gchar* fileName)
 	gtk_mr_scheme_window_set_filename (window, fileName);
 }
 
+/*
+ * Sets up the loading screen before MrScheme is fully loaded
+ * */
+void
+gtk_mr_scheme_window_setup_loading_screen(GtkMrSchemeWindow* win)
+{
+	win->spinner = gtk_spinner_new();
+	GtkWidget* loadingMsg = gtk_label_new ( _("Loading...") );
+	GtkWidget* hb1 = gtk_hbox_new(false, 0);
+	GtkWidget* hb2 = gtk_hbox_new(false, 0);
+	GtkWidget* vb  = gtk_vbox_new(false, 0);
+
+	gtk_box_pack_start(GTK_BOX(vb), hb1, true, true, 0);
+	gtk_box_pack_start(GTK_BOX(vb), win->spinner, false, false, 0);
+	gtk_box_pack_start(GTK_BOX(vb), loadingMsg, false, false, 0);
+	gtk_box_pack_start(GTK_BOX(vb), hb2, true, true, 0);
+	
+	gtk_scrolled_window_add_with_viewport (GTK_SCROLLED_WINDOW (win->viewContainer),
+			                       vb);
+
+	gtk_widget_show_all(win->viewContainer);
+
+	gtk_spinner_start(GTK_SPINNER(win->spinner));
+}
+
 /******************************************************************************
  *                                                                            *
  *                  Callbacks function associated with actions                *
@@ -154,6 +179,9 @@ local_view_ready (GObject* object, gpointer data)
 {
 	GtkMrSchemeWindow* gtk_mr_scheme_window = GTK_MR_SCHEME_WINDOW (data);
 	GList *children, *iter;
+	
+	gtk_spinner_stop(GTK_SPINNER(gtk_mr_scheme_window->spinner));
+
 	children = gtk_container_get_children (GTK_CONTAINER (gtk_mr_scheme_window->viewContainer));
 	for (iter = children; iter != NULL; iter = g_list_next(iter) )
 	{
@@ -421,7 +449,6 @@ gtk_mr_scheme_window_init (GtkMrSchemeWindow *gtk_mr_scheme_window)
 	// Main attributes for the widget
 	GtkWidget*     vBox;
 	GtkAccelGroup* accelGrp;
-	GtkWidget*     loadingMsg;
 
 	// widgets for the menubar
 	GtkWidget *mBar = gtk_menu_bar_new ();
@@ -561,10 +588,8 @@ gtk_mr_scheme_window_init (GtkMrSchemeWindow *gtk_mr_scheme_window)
 
 	gtk_box_pack_start (GTK_BOX (vBox), gtk_mr_scheme_window->viewContainer, true, true, 0);
 
-	loadingMsg = gtk_label_new ( _("Loading...") );
-	gtk_label_set_selectable (GTK_LABEL (loadingMsg), true);
-	gtk_scrolled_window_add_with_viewport (GTK_SCROLLED_WINDOW (gtk_mr_scheme_window->viewContainer), loadingMsg);
-	//gtk_container_add (GTK_CONTAINER (gtk_mr_scheme_window->viewContainer), loadingMsg);
+	gtk_mr_scheme_window_setup_loading_screen(gtk_mr_scheme_window);
+
 	// Increments the number of availalble instances
 	GTK_MR_SCHEME_WINDOW_GET_CLASS (gtk_mr_scheme_window)->numberOfInstances++;
 

@@ -47,6 +47,7 @@ struct _GtkMrSchemeWindow
 {
 	GtkWindow parent_instance;
 	GtkWidget*   viewContainer;
+	GtkWidget*   spinner;
 	GtkMrScheme* mrSchemeView;
 
 	gchar *fileName;
