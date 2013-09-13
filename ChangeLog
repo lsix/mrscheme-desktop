@@ -1,3 +1,7 @@
+2013-09-13  v0.4.1r1 <lancelot@lancelotsix.com
+	* Update french translations
+	* Ensure that the program do not close with unsaved content
+
 2012-12-19  gettextize  <bug-gnu-gettext@gnu.org>
 
 	* Makefile.am (ACLOCAL_AMFLAGS): New variable.
