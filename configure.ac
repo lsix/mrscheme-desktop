@@ -5,10 +5,8 @@ AC_INIT([(Desktop (MrScheme))], 0.4.1, lancelot@lancelotsix.com, mrscheme-deskto
 
 AC_CONFIG_HEADERS([config.h])
 
-AC_CONFIG_MACRO_DIR([m4])
-
 AM_INIT_AUTOMAKE([1.11 -Wall -Werror])
-AM_SILENT_RULES([yes])
+AM_SILENT_RULES([no])
 
 AC_PROG_CC
 AC_PROG_CXX
