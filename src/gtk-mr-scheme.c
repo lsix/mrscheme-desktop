@@ -22,6 +22,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <glib/gi18n.h>
 #include "mrscheme-versionning.h"
 
 G_DEFINE_TYPE (GtkMrScheme, gtk_mr_scheme, WEBKIT_TYPE_WEB_VIEW);
@@ -84,6 +85,24 @@ escape_chars(char *str)
 	// termine par un \0
 	ret[curr_ret] = '\0';
 	return ret;
+}
+
+/*
+ * Shows a dialog telling the user that the installation is wrong and then
+ * quit the application.
+ * */
+void
+show_installation_error_message_and_quit()
+{
+	GtkWidget* dialog =
+		gtk_message_dialog_new(NULL,
+			               GTK_DIALOG_MODAL,
+				       GTK_MESSAGE_ERROR,
+				       GTK_BUTTONS_OK,
+				       _("Impossible to load both online and local versoin.\nCheck your installation."));
+	gtk_dialog_run(GTK_DIALOG(dialog));
+	gtk_widget_destroy(dialog);
+	exit(-1);
 }
 
 /******************************************************************************
@@ -233,12 +252,23 @@ after_load_web_view_cb(GObject *obj, gpointer data)
 static void
 gtk_mr_scheme_init (GtkMrScheme *gtk_mr_scheme)
 {
-	webkit_web_view_load_uri (WEBKIT_WEB_VIEW (gtk_mr_scheme),
-	                          (use_remote_version()==MR_SCHEME_REMOTE?MRSCHEME_WEB_BASE "mrscheme.html" : MRSCHEME_LOCAL_BASE "mrscheme.html" ));
-	g_signal_connect(gtk_mr_scheme,
-	                 "load-finished",
-	                 G_CALLBACK(after_load_web_view_cb),
-	                 NULL);
+	enum version_choice_t version_to_load = select_adequate_version();
+
+	if (version_to_load != MR_SCHEME_VERSION_NOT_FOUND)
+	{
+		webkit_web_view_load_uri (WEBKIT_WEB_VIEW (gtk_mr_scheme),
+	        	                  (version_to_load==MR_SCHEME_VERSION_REMOTE?
+					   MRSCHEME_WEB_BASE "mrscheme.html":
+					   MRSCHEME_LOCAL_BASE "mrscheme.html"));
+
+		g_signal_connect(gtk_mr_scheme,
+		                 "load-finished",
+	        	         G_CALLBACK(after_load_web_view_cb),
+	                	 NULL);
+	} else
+	{
+		show_installation_error_message_and_quit();
+	}
 }
 
 static void

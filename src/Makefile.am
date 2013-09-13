@@ -8,6 +8,7 @@ AM_CPPFLAGS = \
 	-DPACKAGE_LOCALE_DIR=\""$(localedir)"\" \
 	-DPACKAGE_SRC_DIR=\""$(srcdir)"\" \
 	-DPACKAGE_DATA_DIR=\""$(pkgdatadir)"\" \
+	-DDEBUG \
 	$(gtk2_CFLAGS) $(webkit_CFLAGS) $(curl_CFLAGS)
 
 AM_CFLAGS =\

@@ -155,7 +155,7 @@ char* get_local_version(){
  *                        mrscheme-versionning module                         *
  *                                                                            *
  ******************************************************************************/
-enum version_choice_t use_remote_version() {
+enum version_choice_t select_adequate_version() {
 	char* remote_version = get_remote_version();
 	char* local_version  = get_local_version();
 	int ret = 0;
@@ -166,20 +166,36 @@ enum version_choice_t use_remote_version() {
 	       local_version);
 	#endif
 
-	if (remote_version == NULL) {
-		// No internet. Only local version availalble
-		ret = MR_SCHEME_LOCAL;
+	if ((remote_version == NULL) && (local_version == NULL)) {
+		ret = MR_SCHEME_VERSION_NOT_FOUND;
+	} else if ((remote_version == NULL) || (local_version == NULL)) {
+		if (local_version == NULL) {
+			// No internet. Only local version availalble
+			ret = MR_SCHEME_VERSION_REMOTE;
+		} else {
+			ret = MR_SCHEME_VERSION_LOCAL;
+		}
 	} else {
 		if (strcmp(local_version, remote_version)<0) {
-			ret = MR_SCHEME_REMOTE;
+			ret = MR_SCHEME_VERSION_REMOTE;
 		} else {
-			ret = MR_SCHEME_LOCAL;
+			ret = MR_SCHEME_VERSION_LOCAL;
 		}
 	}
 
 	#ifdef DEBUG
-	printf(_("Using %s version of MrScheme\n"),
-	       (ret==MR_SCHEME_LOCAL?_("local"):_("remote")));
+	switch (ret) {
+		case MR_SCHEME_VERSION_LOCAL:
+			printf(_("Using local version of MrScheme.\n"));
+			break;
+		case MR_SCHEME_VERSION_REMOTE:
+			printf(_("Using online version of MrScheme.\n"));
+			break;
+		case MR_SCHEME_VERSION_NOT_FOUND:
+			fprintf(stderr, _("None of the local and remote version is availalble.\n"));
+		default:
+			break;
+	}
 	#endif
 
 	// Cleanup allocated memory

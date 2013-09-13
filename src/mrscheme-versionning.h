@@ -23,8 +23,9 @@
 	#define MR_SCHEME_REMOTE_VERSION_FILE_URI MRSCHEME_WEB_BASE "VERSION"
 
 	enum version_choice_t {
-		MR_SCHEME_LOCAL,
-		MR_SCHEME_REMOTE
+		MR_SCHEME_VERSION_NOT_FOUND,
+		MR_SCHEME_VERSION_LOCAL,
+		MR_SCHEME_VERSION_REMOTE
 	};
 
 	/*
@@ -33,6 +34,6 @@
 	 * The newer version of both remote and local should be used. If both
 	 * are same version number, then local version should be prefered.
 	 */
-	enum version_choice_t use_remote_version();
+	enum version_choice_t select_adequate_version();
 
 #endif

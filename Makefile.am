@@ -19,9 +19,9 @@ nobase_dist_mrscheme_DATA = \
 	MrScheme/eval101/ecotree.css \
 	MrScheme/eval101/ecotree.js \
 	MrScheme/eval101/numericaltower101.js \
-	MrScheme/eval101/bignum/README \
-	MrScheme/eval101/bignum/biginteger.js \
-	MrScheme/eval101/bignum/schemeNumber.js \
+	MrScheme/eval101/bignum101/README \
+	MrScheme/eval101/bignum101/biginteger101.js \
+	MrScheme/eval101/bignum101/schemeNumber101.js \
 	MrScheme/editor101/theme101.css \
 	MrScheme/editor101/scheme101-mode.js \
 	MrScheme/editor101/codemirror/src/css/baboon.png \

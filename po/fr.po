@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.1\n"
 "Report-Msgid-Bugs-To: lancelot.six@lip6.fr\n"
-"POT-Creation-Date: 2013-09-13 15:51+0200\n"
+"POT-Creation-Date: 2013-09-13 23:35+0200\n"
 "PO-Revision-Date: 2012-12-19 15:47+0100\n"
 "Last-Translator: Lancelot SIX <lancelot@lancelotsix.com>\n"
 "Language-Team: French\n"
@@ -39,7 +39,9 @@ msgstr "Sauvegarder ?"
 
 #: ../src/gtk-mr-scheme-window.c:350
 msgid "Unsaved changes in the window. Quit anyway ?"
-msgstr "Certaines éditions ont été effectués depuis le dernier enregistrement. Désirez vous enregistrer avant de fermer la fenêtre ?"
+msgstr ""
+"Certaines éditions ont été effectués depuis le dernier enregistrement. "
+"Voulez-vous vraiment fermer avant de fermer la fenêtre ?"
 
 #: ../src/gtk-mr-scheme-window.c:428
 msgid "_File"
@@ -117,6 +119,14 @@ msgstr "A propos de (Desktop (MrScheme))"
 msgid "Loading..."
 msgstr "Chargement de (MrScheme)..."
 
+#: ../src/gtk-mr-scheme.c:98
+msgid ""
+"Impossible to load both online and local versoin.\n"
+"Check your installation."
+msgstr ""
+"Impossible de charger la version en ligne et la version locale de MrScheme.\n"
+"Vérifiez l'installation et votre connexion internet."
+
 #: ../src/mrscheme-versionning.c:97
 #, c-format
 msgid "Underlying libcurl error : %d\n"
@@ -140,16 +150,18 @@ msgstr ""
 "Version distante : %s\n"
 "Version locale   : %s\n"
 
-#: ../src/mrscheme-versionning.c:181
+#: ../src/mrscheme-versionning.c:189
+#,  c-format
+msgid "Using local version of MrScheme.\n"
+msgstr "Utilisation de la version locale de MrScheme.\n"
+
+#: ../src/mrscheme-versionning.c:192
+#, fuzzy, c-format
+msgid "Using online version of MrScheme.\n"
+msgstr "Utilisation de la version en ligne de MrScheme\n"
+
+#: ../src/mrscheme-versionning.c:195
 #, c-format
-msgid "Using %s version of MrScheme\n"
-msgstr "Utilisation de la version %s de MrScheme\n"
-
-#: ../src/mrscheme-versionning.c:182
-msgid "local"
-msgstr "locale"
-
-#: ../src/mrscheme-versionning.c:182
-msgid "remote"
-msgstr "distante"
+msgid "None of the local and remote version is availalble.\n"
+msgstr "Ni la version en ligne ni la version locale ne sont disponnibles.\n"
 
