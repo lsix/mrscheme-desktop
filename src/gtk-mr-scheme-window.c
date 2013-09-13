@@ -99,7 +99,7 @@ gtk_mr_scheme_window_update_title (GtkMrSchemeWindow *window)
 }
 
 /*
- * Update the fielname of associated with the window
+ * Update the fielname of the file associated with the window
  * */
 void
 gtk_mr_scheme_window_set_filename(GtkMrSchemeWindow* window, const gchar* filename)
@@ -304,7 +304,8 @@ void show_about_info (GObject *object, gpointer data)
 	gtk_about_dialog_set_authors      (GTK_ABOUT_DIALOG (dialog),
 	                                   authors);
 	gtk_about_dialog_set_comments     (GTK_ABOUT_DIALOG (dialog),
-	                                   _("Desktop version of MrScheme.\n Original project availalble at https://www-licence.ufr-info-p6.jussieu.fr/lmd/licence/2012/ue/LI101-2012oct/MrScheme/mrscheme.html"));
+	                                   _("Desktop version of MrScheme.\n Original project availalble at "
+						  MRSCHEME_WEB_BASE "/mrscheme.html"));
 	
 	gtk_dialog_run ( GTK_DIALOG(dialog)); // Just ignore return value since just one is acceptable
 	gtk_widget_destroy (dialog);
