@@ -434,7 +434,6 @@ quit_all_mr_scheme_window(GObject* object, gpointer data)
 			curr = nxt;
 		}
 	}
-	gtk_main_quit();
 }
 
 /******************************************************************************
